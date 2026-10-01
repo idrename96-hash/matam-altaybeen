@@ -195,7 +195,7 @@
             color: white;
             text-align: center;
             box-sizing: border-box;
-            display: none; /* مخفية عن العملاء تماماً */
+            display: none; /* مخفية تماماً عن العملاء */
         }
 
         .admin-section h3 {
@@ -451,7 +451,7 @@
     </header>
 
     <div class="container">
-        <!-- نموذج التسجيل في المسابقة للعملاء -->
+        <!-- نموذج التسجيل للعملاء -->
         <div class="card">
             <h2>سجل معنا في مسابقة السحب</h2>
             <form id="sweepstakesForm">
@@ -485,30 +485,37 @@
             </div>
         </div>
 
-        <!-- لوحة تحكم الإدارة السرية (مخفية عن العملاء تماماً) -->
+        <!-- لوحة تحكم الإدارة السرية (تفتح بكلمة المرور فقط) -->
         <div class="admin-section" id="adminPanel">
-            <h3><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة السريعة</h3>
+            <h3><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة (السحب العشوائي)</h3>
             
             <div class="admin-controls">
-                <label for="winnerCount">حدد عدد الفائزين:</label>
+                <label for="winnerCount">عدد الفائزين:</label>
                 <input type="number" id="winnerCount" value="1" min="1" max="10">
             </div>
 
-            <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎉 إجراء السحب العشوائي</button>
+            <button type="button" class="draw-btn" onclick="drawWinnersFromPaste()">🎲 اختيار فائزين عشوائياً</button>
+            
+            <div style="margin-bottom: 10px; font-size: 12px; color: #b0bec5;">
+                * للصق المشاركين: افتح شيت جوجل، انسخ عمود (الاسم ورقم الجوال) والصقه هنا مباشرة:
+            </div>
+            
+            <textarea id="pasteArea" placeholder="الصق بيانات المشاركين من الإكسيل هنا..." style="width:100%; height:80px; background:#111; color:#fff; border:1px solid #546e7a; border-radius:6px; padding:8px; font-size:13px; box-sizing:border-box; margin-bottom:10px;"></textarea>
             
             <div class="winner-display-box" id="winnerBox">
-                <span>جاهز للسحب من قاعدة البيانات الحقيقية...</span>
+                <span>نتيجة السحب ستظهر هنا...</span>
             </div>
         </div>
     </div>
 
     <footer>
         <span>جميع الحقوق محفوظة © مطعم الطيبين</span>
+        <!-- زر خفي تماماً في الأسفل لفتح لوحة التحكم -->
         <button type="button" class="secret-admin-trigger" onclick="toggleAdminPanel()">تسجيل دخول الإدارة</button>
     </footer>
 
     <script>
-        // إظهار أو إخفاء لوحة الإدارة بكلمة مرور
+        // إظهار لوحة التحكم السرية بكلمة مرور 1234
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const pass = prompt("أدخل كلمة مرور الإدارة:");
@@ -520,61 +527,67 @@
             }
         }
 
-        // إخفاء أجزاء من رقم الجوال (أول 3 وأخر 4 أرقام)
+        // دالة إخفاء أجزاء من رقم الجوال (أول 3 وأخر 4 أرقام)
         function maskPhone(phone) {
-            if(!phone || String(phone).length < 7) return "056****2312";
-            let pStr = String(phone);
-            let start = pStr.substring(0, 3);
-            let end = pStr.substring(pStr.length - 4);
+            let cleanPhone = String(phone).replace(/\s+/g, '');
+            if(cleanPhone.length < 7) return cleanPhone;
+            let start = cleanPhone.substring(0, 3);
+            let end = cleanPhone.substring(cleanPhone.length - 4);
             return start + "****" + end;
         }
 
-        // دالة السحب العشوائي من جوجل شيت حقيقة فقط
-        function fetchAndPickWinners() {
+        // دالة السحب العشوائي من البيانات التي تنسخها من شيت جوجل
+        function drawWinnersFromPaste() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
-            
-            // استبدل هذا الرابط برابط الـ Web App الفعلي الخاص بجوجل شيت لديك
-            const scriptURL = 'ضع_رابط_الـ_Web_App_هنا';
+            const rawText = document.getElementById('pasteArea').value.trim();
 
-            if (scriptURL === 'ضع_رابط_الـ_Web_App_هنا') {
-                box.innerHTML = '<span style="color:#ffcc80;">الرجاء وضع رابط الـ Web App الصحيح الخاص بجوجل شيت في الكود أولاً لكي يسحب من البيانات الحقيقية!</span>';
+            if (!rawText) {
+                box.innerHTML = '<span style="color:#ffcc80;">الرجاء نسخ عمود الأسماء والأرقام من شيت جوجل ولصقها في المربع أعلاه أولاً!</span>';
                 return;
             }
 
-            box.innerHTML = '<span>جاري جلب البيانات واختيار الفائزين عشوائياً... 🎲</span>';
+            // تحليل النصوص المنسوخة (كل سطر يعتبر مشارك، والبيانات مفصولة بمسافة أو Tab)
+            const lines = rawText.split('\n');
+            let participants = [];
 
-            fetch(scriptURL + '?action=getParticipants')
-                .then(response => response.json())
-                .then(data => {
-                    if (!data || data.length === 0) {
-                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد بيانات مسجلة في الشيت حتى الآن!</span>';
-                        return;
+            for (let line of lines) {
+                let parts = line.split(/\s+/); // تقسيم السطر بناءً على المسافات
+                if (parts.length >= 2) {
+                    // آخر جزء غالباً هو رقم الجوال، وما قبلها هو الاسم
+                    let phone = parts[parts.length - 1];
+                    let name = parts.slice(0, parts.length - 1).join(' ');
+                    if (phone.length >= 7) {
+                        participants.push({ name: name, phone: phone });
                     }
-                    
-                    let resultsHTML = "";
-                    let chosen = [];
-                    let limit = Math.min(countInput, data.length);
-                    
-                    for(let i=0; i<limit; i++) {
-                        let rand;
-                        do {
-                            rand = Math.floor(Math.random() * data.length);
-                        } while(chosen.includes(rand));
-                        chosen.push(rand);
-                        
-                        let w = data[rand];
-                        resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
-                    }
-                    box.innerHTML = resultsHTML;
-                })
-                .catch(error => {
-                    box.innerHTML = '<span style="color:#ffcc80;">خطأ في الاتصال بالشيت. تأكد من تفعيل صلاحيات القراءة (doGet) في كود جوجل شيت.</span>';
-                });
+                }
+            }
+
+            if (participants.length === 0) {
+                box.innerHTML = '<span style="color:#ffcc80;">لم يتم التعرف على البيانات. تأكد من لصق الاسم ورقم الجوال بشكل صحيح.</span>';
+                return;
+            }
+
+            let resultsHTML = "";
+            let chosen = [];
+            let limit = Math.min(countInput, participants.length);
+
+            for (let i = 0; i < limit; i++) {
+                let rand;
+                do {
+                    rand = Math.floor(Math.random() * participants.length);
+                } while (chosen.includes(rand));
+                chosen.push(rand);
+
+                let w = participants[rand];
+                resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
+            }
+
+            box.innerHTML = resultsHTML;
         }
 
-        // كود إرسال مشاركات العملاء إلى جوجل شيت
-        const scriptURL = 'ضع_رابط_الـ_Web_App_هنا'; // ضع رابط الـ Web App هنا أيضاً
+        // كود الإرسال القديم الخاص بك (الذي يعمل بنجاح مع شيت جوجل)
+        const scriptURL = 'ضع_رابط_الـ_Web_App_هنا'; // رابط الـ POST القديم الخاص بك
         const form = document.getElementById('sweepstakesForm');
         const submitBtn = document.getElementById('submitBtn');
         const message = document.getElementById('message');
