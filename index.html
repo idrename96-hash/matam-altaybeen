@@ -16,8 +16,6 @@
             --accent-yellow: #ffeb3b;
             --bg-color: #f4f4f9;
             --text-color: #333333;
-            --wood-color: #5c3a21;
-            --wood-dark: #3e2723;
         }
 
         body {
@@ -31,7 +29,6 @@
             min-height: 100vh;
         }
 
-        /* تصميم الهيدر بخلفية واضحة تماما بدون تظليل */
         header {
             background: url('https://www.thisisamman.com/wp-content/uploads/2023/01/%D8%A3%D9%83%D9%84.webp') center/cover no-repeat;
             text-align: center;
@@ -67,7 +64,6 @@
             100% { transform: scale(1); }
         }
 
-        /* برواز مزخرف لاسم المطعم */
         .wood-board {
             background: rgba(0, 0, 0, 0.85); 
             border: 4px solid var(--dark-yellow);
@@ -86,18 +82,6 @@
             background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
         }
 
-        .wood-board::before, .wood-board::after {
-            content: '';
-            position: absolute;
-            border: 1px solid var(--accent-yellow);
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
         .wood-board h1 {
             margin: 0;
             font-size: 45px;
@@ -105,8 +89,6 @@
             color: var(--accent-yellow);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             letter-spacing: 1px;
-            position: relative;
-            z-index: 2;
         }
 
         .red-ribbon {
@@ -118,8 +100,6 @@
             border-radius: 5px;
             margin-top: -10px;
             box-shadow: 0 5px 10px rgba(0,0,0,0.4);
-            position: relative;
-            z-index: 2;
             border: 2px solid #8e0000;
         }
 
@@ -148,13 +128,11 @@
 
         .info-badge.location i {
             color: var(--primary-red);
-            font-size: 20px;
         }
 
         .badge-contact {
             background-color: #1a4a28;
             color: white;
-            flex-wrap: wrap;
             justify-content: center;
             padding: 6px 15px;
         }
@@ -169,24 +147,6 @@
             align-items: center;
             gap: 6px;
             font-size: 14px;
-            transition: all 0.3s;
-            border: 1px solid transparent;
-        }
-        
-        .contact-action:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .wa-action i {
-            color: #25d366;
-            font-size: 18px;
-        }
-
-        .call-action i {
-            color: #00bcd4;
-            font-size: 16px;
         }
 
         .phone-number {
@@ -203,7 +163,6 @@
             color: #ffeb3b;
         }
 
-        /* تنسيق بقية الصفحة */
         .container {
             flex: 1;
             display: flex;
@@ -224,7 +183,7 @@
             border-top: 6px solid var(--dark-yellow);
         }
 
-        /* لوحة التحكم السرية للإدارة (مخفية افتراضياً) */
+        /* لوحة التحكم السرية للإدارة */
         .admin-section {
             background: linear-gradient(135deg, #263238, #37474f);
             border-radius: 16px;
@@ -243,7 +202,6 @@
             color: var(--accent-yellow);
             margin-top: 0;
             margin-bottom: 15px;
-            font-weight: 800;
             font-size: 20px;
         }
 
@@ -252,13 +210,7 @@
             gap: 10px;
             margin-bottom: 15px;
             align-items: center;
-        }
-
-        .admin-controls label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
+            justify-content: center;
         }
 
         .admin-controls input[type="number"] {
@@ -281,16 +233,8 @@
             font-size: 16px;
             cursor: pointer;
             font-weight: 800;
-            font-family: 'Cairo', sans-serif;
-            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
-            transition: all 0.3s;
             width: 100%;
             margin-bottom: 15px;
-        }
-
-        .draw-btn:hover {
-            background-color: #1b5e20;
-            transform: translateY(-2px);
         }
 
         .winner-display-box {
@@ -324,7 +268,6 @@
             font-weight: 900;
         }
 
-        /* زر سري صغير جداً في أسفل الصفحة لفتح لوحة التحكم (لا يلفت انتباه العميل) */
         .secret-admin-trigger {
             background: transparent;
             border: none;
@@ -340,7 +283,6 @@
             text-align: center;
             color: var(--primary-red);
             margin-bottom: 25px;
-            font-weight: 800;
             font-size: 24px;
         }
 
@@ -363,13 +305,6 @@
             box-sizing: border-box;
             font-size: 16px;
             font-family: 'Cairo', sans-serif;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--dark-yellow);
-            outline: none;
-            box-shadow: 0 0 5px rgba(251, 192, 45, 0.4);
         }
 
         button.submit-btn {
@@ -382,14 +317,7 @@
             font-size: 18px;
             cursor: pointer;
             font-weight: 800;
-            font-family: 'Cairo', sans-serif;
             box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
-            transition: all 0.3s;
-        }
-
-        button.submit-btn:hover {
-            background-color: #b71c1c;
-            transform: translateY(-2px);
         }
 
         .whatsapp-section {
@@ -413,15 +341,8 @@
             font-size: 16px;
             width: 100%;
             box-sizing: border-box;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
-            transition: background 0.3s;
         }
 
-        .whatsapp-btn:hover {
-            background-color: #1ebe5d;
-        }
-
-        /* لوحة شرف الفائزين للعملاء أسفل الصفحة */
         .winners-public-section {
             background: linear-gradient(135deg, #ffffff, #fffde7);
             border-radius: 16px;
@@ -438,7 +359,6 @@
             color: #b71c1c;
             margin-top: 0;
             margin-bottom: 5px;
-            font-weight: 900;
             font-size: 20px;
         }
 
@@ -455,7 +375,6 @@
             background: #ffffff;
             padding: 12px 15px;
             border-radius: 8px;
-            margin-bottom: 10px;
             border: 1px solid #e0e0e0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
@@ -506,17 +425,14 @@
             <i class="fa-solid fa-tag"></i> خصومات 50% على الوجبات!
         </div>
         
-        <!-- اللوحة المزخرفة -->
         <div class="wood-board">
             <h1>مطعم الطيبين</h1>
         </div>
         
-        <!-- الشريط الأحمر -->
         <div class="red-ribbon">
             للأكلات الشعبية المصرية
         </div>
 
-        <!-- شريط العنوان وأرقام التواصل -->
         <div class="info-bar">
             <div class="info-badge location">
                 <i class="fa-solid fa-location-dot"></i> مكة المكرمة حي العتيبية شارع الجزائر
@@ -558,7 +474,7 @@
             </div>
         </div>
 
-        <!-- لوحة شرف الفائزين للعملاء أسفل الصفحة (تشجيعية) -->
+        <!-- لوحة شرف الفائزين للعملاء أسفل الصفحة -->
         <div class="winners-public-section">
             <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
             <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
@@ -566,11 +482,6 @@
             <div class="winner-row">
                 <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
                 <div class="w-phone" dir="ltr">056****2312</div>
-            </div>
-
-            <div class="winner-row" style="margin-bottom: 0;">
-                <div class="w-name"><i class="fa-solid fa-medal"></i> خالد عبد الله</div>
-                <div class="w-phone" dir="ltr">055****8910</div>
             </div>
         </div>
 
@@ -586,23 +497,22 @@
             <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎉 إجراء السحب العشوائي</button>
             
             <div class="winner-display-box" id="winnerBox">
-                <span>جاهز للسحب... حدد العدد واضغط الزر</span>
+                <span>جاهز للسحب من قاعدة البيانات الحقيقية...</span>
             </div>
         </div>
     </div>
 
     <footer>
         <span>جميع الحقوق محفوظة © مطعم الطيبين</span>
-        <!-- زر خفي تماماً في الأسفل لا يضغط عليه سوى أنت لفتح لوحة التحكم -->
         <button type="button" class="secret-admin-trigger" onclick="toggleAdminPanel()">تسجيل دخول الإدارة</button>
     </footer>
 
     <script>
-        // دالة لإظهار/إخفاء لوحة التحكم السرية عند الضغط على الرابط الخفي أسفل الصفحة
+        // إظهار أو إخفاء لوحة الإدارة بكلمة مرور
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const pass = prompt("أدخل كلمة مرور الإدارة:");
-            if (pass === "1234") { // يمكنك تغيير كلمة المرور هنا إن أردت
+            if (pass === "1234") {
                 panel.style.display = panel.style.display === "block" ? "none" : "block";
                 panel.scrollIntoView({ behavior: 'smooth' });
             } else if (pass !== null) {
@@ -610,7 +520,7 @@
             }
         }
 
-        // دالة إخفاء أجزاء من رقم الجوال
+        // إخفاء أجزاء من رقم الجوال (أول 3 وأخر 4 أرقام)
         function maskPhone(phone) {
             if(!phone || String(phone).length < 7) return "056****2312";
             let pStr = String(phone);
@@ -619,41 +529,20 @@
             return start + "****" + end;
         }
 
-        // دالة السحب العشوائي المباشر لعدد محدد من الفائزين من الشيت
+        // دالة السحب العشوائي من جوجل شيت حقيقة فقط
         function fetchAndPickWinners() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
-            const scriptURL = 'ضع_رابط_الـ_Web_App_هنا'; // ضع رابط الـ Web App الخاص بك هنا
+            
+            // استبدل هذا الرابط برابط الـ Web App الفعلي الخاص بجوجل شيت لديك
+            const scriptURL = 'ضع_رابط_الـ_Web_App_هنا';
 
             if (scriptURL === 'ضع_رابط_الـ_Web_App_هنا') {
-                // بيانات تجريبية للاختبار في حال لم ترتبط بالرابط بعد
-                const dummyParticipants = [
-                    { name: "محمد أحمد", phone: "0561234567" },
-                    { name: "عمر خالد", phone: "0559876543" },
-                    { name: "إبراهيم علي", phone: "0501122334" },
-                    { name: "سعيد القحطاني", phone: "0539988776" },
-                    { name: "عبدالله العمري", phone: "0541122333" }
-                ];
-                
-                let resultsHTML = "";
-                let chosen = [];
-                let limit = Math.min(countInput, dummyParticipants.length);
-                
-                for(let i=0; i<limit; i++) {
-                    let rand;
-                    do {
-                        rand = Math.floor(Math.random() * dummyParticipants.length);
-                    } while(chosen.includes(rand));
-                    chosen.push(rand);
-                    
-                    let w = dummyParticipants[rand];
-                    resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
-                }
-                box.innerHTML = resultsHTML;
+                box.innerHTML = '<span style="color:#ffcc80;">الرجاء وضع رابط الـ Web App الصحيح الخاص بجوجل شيت في الكود أولاً لكي يسحب من البيانات الحقيقية!</span>';
                 return;
             }
 
-            box.innerHTML = '<span>جاري اختيار الفائزين عشوائياً... 🎲</span>';
+            box.innerHTML = '<span>جاري جلب البيانات واختيار الفائزين عشوائياً... 🎲</span>';
 
             fetch(scriptURL + '?action=getParticipants')
                 .then(response => response.json())
@@ -680,12 +569,12 @@
                     box.innerHTML = resultsHTML;
                 })
                 .catch(error => {
-                    box.innerHTML = '<span style="color:#ffcc80;">خطأ في جلب البيانات من الشيت، تأكد من صحة الرابط.</span>';
+                    box.innerHTML = '<span style="color:#ffcc80;">خطأ في الاتصال بالشيت. تأكد من تفعيل صلاحيات القراءة (doGet) في كود جوجل شيت.</span>';
                 });
         }
 
         // كود إرسال مشاركات العملاء إلى جوجل شيت
-        const scriptURL = 'ضع_رابط_الـ_Web_App_هنا';
+        const scriptURL = 'ضع_رابط_الـ_Web_App_هنا'; // ضع رابط الـ Web App هنا أيضاً
         const form = document.getElementById('sweepstakesForm');
         const submitBtn = document.getElementById('submitBtn');
         const message = document.getElementById('message');
@@ -717,12 +606,12 @@
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'إرسال المشاركة';
                 })
-                .catch, error => {
+                .catch(error => {
                     message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
                     message.style.color = 'red';
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'إرسال المشاركة';
-                };
+                });
         });
     </script>
 
