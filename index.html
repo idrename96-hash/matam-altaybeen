@@ -195,7 +195,7 @@
             color: white;
             text-align: center;
             box-sizing: border-box;
-            display: none; /* مخفية تماماً عن العملاء */
+            display: none;
         }
 
         .admin-section h3 {
@@ -485,7 +485,7 @@
             </div>
         </div>
 
-        <!-- لوحة تحكم الإدارة السرية (تفتح بكلمة المرور فقط) -->
+        <!-- لوحة تحكم الإدارة السرية (تفتح بكلمة المرور للسحب العشوائي) -->
         <div class="admin-section" id="adminPanel">
             <h3><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة (السحب العشوائي)</h3>
             
@@ -497,10 +497,10 @@
             <button type="button" class="draw-btn" onclick="drawWinnersFromPaste()">🎲 اختيار فائزين عشوائياً</button>
             
             <div style="margin-bottom: 10px; font-size: 12px; color: #b0bec5;">
-                * للصق المشاركين: افتح شيت جوجل، انسخ عمود (الاسم ورقم الجوال) والصقه هنا مباشرة:
+                * للصق المشاركين: انسخ عمود الأسماء والأرقام من شيت جوجل والصقه هنا:
             </div>
             
-            <textarea id="pasteArea" placeholder="الصق بيانات المشاركين من الإكسيل هنا..." style="width:100%; height:80px; background:#111; color:#fff; border:1px solid #546e7a; border-radius:6px; padding:8px; font-size:13px; box-sizing:border-box; margin-bottom:10px;"></textarea>
+            <textarea id="pasteArea" placeholder="الصق البيانات هنا..." style="width:100%; height:80px; background:#111; color:#fff; border:1px solid #546e7a; border-radius:6px; padding:8px; font-size:13px; box-sizing:border-box; margin-bottom:10px;"></textarea>
             
             <div class="winner-display-box" id="winnerBox">
                 <span>نتيجة السحب ستظهر هنا...</span>
@@ -510,7 +510,6 @@
 
     <footer>
         <span>جميع الحقوق محفوظة © مطعم الطيبين</span>
-        <!-- زر خفي تماماً في الأسفل لفتح لوحة التحكم -->
         <button type="button" class="secret-admin-trigger" onclick="toggleAdminPanel()">تسجيل دخول الإدارة</button>
     </footer>
 
@@ -527,7 +526,7 @@
             }
         }
 
-        // دالة إخفاء أجزاء من رقم الجوال (أول 3 وأخر 4 أرقام)
+        // إخفاء أجزاء من رقم الجوال (أول 3 وأخر 4 أرقام)
         function maskPhone(phone) {
             let cleanPhone = String(phone).replace(/\s+/g, '');
             if(cleanPhone.length < 7) return cleanPhone;
@@ -536,7 +535,7 @@
             return start + "****" + end;
         }
 
-        // دالة السحب العشوائي من البيانات التي تنسخها من شيت جوجل
+        // دالة السحب العشوائي من البيانات المنسوخة
         function drawWinnersFromPaste() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
@@ -547,14 +546,12 @@
                 return;
             }
 
-            // تحليل النصوص المنسوخة (كل سطر يعتبر مشارك، والبيانات مفصولة بمسافة أو Tab)
             const lines = rawText.split('\n');
             let participants = [];
 
             for (let line of lines) {
-                let parts = line.split(/\s+/); // تقسيم السطر بناءً على المسافات
+                let parts = line.split(/\s+/);
                 if (parts.length >= 2) {
-                    // آخر جزء غالباً هو رقم الجوال، وما قبلها هو الاسم
                     let phone = parts[parts.length - 1];
                     let name = parts.slice(0, parts.length - 1).join(' ');
                     if (phone.length >= 7) {
@@ -586,21 +583,14 @@
             box.innerHTML = resultsHTML;
         }
 
-        // كود الإرسال القديم الخاص بك (الذي يعمل بنجاح مع شيت جوجل)
-        const scriptURL = 'ضع_رابط_الـ_Web_App_هنا'; // رابط الـ POST القديم الخاص بك
+        // تم ربط رابط الشيت الفعلي الخاص بك هنا للإرسال المباشر
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby-Gqxk3D1LfQ3WhHllEv1kOGmWu4D5M85wN3K0C2Z1XjXfTF2IJmTHFgEn1XYTg_rl/exec';
         const form = document.getElementById('sweepstakesForm');
         const submitBtn = document.getElementById('submitBtn');
         const message = document.getElementById('message');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-            
-            if (scriptURL === 'https://script.google.com/macros/s/AKfycby-Gqxk3D1LfQ3WhHllEv1kOGmWu4D5M85wN3K0C2Z1XjXfTF2IJmTHFgEn1XYTg_rl/exec') {
-                message.textContent = 'تم إرسال مشاركتك بنجاح! (قم بربط الرابط الفعلي لاحقاً)';
-                message.style.color = 'green';
-                form.reset();
-                return;
-            }
 
             submitBtn.disabled = true;
             submitBtn.textContent = 'جاري الإرسال...';
