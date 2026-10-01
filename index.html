@@ -6,15 +6,18 @@
     <title>مسابقة سحب - مطعم الطيبين</title>
     <!-- استيراد خط كايو الأنيق -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- استيراد أيقونات FontAwesome للواتساب -->
+    <!-- استيراد أيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-red: #d32f2f;
+            --dark-red: #9a0007;
             --dark-yellow: #fbc02d;
             --accent-yellow: #ffeb3b;
-            --bg-color: #fffde7;
+            --bg-color: #f4f4f9;
             --text-color: #333333;
+            --wood-color: #5c3a21;
+            --wood-dark: #3e2723;
         }
 
         body {
@@ -28,17 +31,20 @@
             min-height: 100vh;
         }
 
+        /* تصميم الهيدر بخلفية واضحة تماما بدون تظليل */
         header {
-            background: linear-gradient(135deg, var(--primary-red), #b71c1c);
-            color: white;
+            background: url('https://www.thisisamman.com/wp-content/uploads/2023/01/%D8%A3%D9%83%D9%84.webp') center/cover no-repeat;
             text-align: center;
-            padding: 25px 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            padding: 60px 20px 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             border-bottom: 5px solid var(--dark-yellow);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* شريط خصومات 50% البارز في أعلى الهيدر */
         .discount-badge {
             background-color: var(--dark-yellow);
             color: #b71c1c;
@@ -47,9 +53,12 @@
             padding: 6px 16px;
             border-radius: 20px;
             display: inline-block;
-            margin-bottom: 15px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             animation: pulse 2s infinite;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 5;
         }
 
         @keyframes pulse {
@@ -58,47 +67,163 @@
             100% { transform: scale(1); }
         }
 
-        .logo-container {
-            width: 80px;
-            height: 80px;
-            background-color: white;
-            border-radius: 50%;
-            margin: 0 auto 12px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border: 3px solid var(--dark-yellow);
-            overflow: hidden;
+        /* برواز مزخرف لاسم المطعم */
+        .wood-board {
+            background: rgba(0, 0, 0, 0.85); 
+            border: 4px solid var(--dark-yellow);
+            border-radius: 10px;
+            padding: 20px 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+            max-width: 90%;
+            /* زخرفة زوايا البرواز */
+            background-image: 
+                linear-gradient(var(--dark-yellow), var(--dark-yellow)), 
+                linear-gradient(var(--dark-yellow), var(--dark-yellow)), 
+                linear-gradient(var(--dark-yellow), var(--dark-yellow)), 
+                linear-gradient(var(--dark-yellow), var(--dark-yellow));
+            background-repeat: no-repeat;
+            background-size: 20px 4px, 4px 20px;
+            background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
         }
 
-        .logo-container i {
-            font-size: 36px;
-            color: var(--primary-red);
+        /* خطوط إضافية للزخرفة */
+        .wood-board::before, .wood-board::after {
+            content: '';
+            position: absolute;
+            border: 1px solid var(--accent-yellow);
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            pointer-events: none;
+            opacity: 0.6;
         }
 
-        header h1 {
+        .wood-board h1 {
             margin: 0;
-            font-size: 26px;
+            font-size: 45px;
             font-weight: 900;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            color: var(--accent-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
         }
 
+        /* الشريط الأحمر */
+        .red-ribbon {
+            background: linear-gradient(to right, #b71c1c, #d32f2f, #b71c1c);
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            padding: 10px 50px;
+            border-radius: 5px;
+            margin-top: -10px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+            position: relative;
+            z-index: 2;
+            border: 2px solid #8e0000;
+        }
+
+        /* شريط المعلومات (العنوان والواتس) */
+        .info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .info-badge {
+            background-color: white;
+            color: var(--text-color);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .info-badge.location i {
+            color: var(--primary-red);
+            font-size: 20px;
+        }
+
+        /* أزرار الاتصال التفاعلية */
+        .badge-contact {
+            background-color: #1a4a28;
+            color: white;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 6px 15px;
+        }
+        
+        .contact-action {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .contact-action:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .wa-action i {
+            color: #25d366;
+            font-size: 18px;
+        }
+
+        .call-action i {
+            color: #00bcd4;
+            font-size: 16px;
+        }
+
+        .phone-number {
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 1px;
+            margin-right: 5px;
+        }
+
+        .contact-text {
+            font-size: 14px;
+            font-weight: 700;
+            margin-right: 10px;
+            color: #ffeb3b; /* تمييز النص باللون الأصفر */
+        }
+
+        /* تنسيق بقية الصفحة */
         .container {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px 20px;
         }
 
         .card {
             background: white;
-            padding: 30px;
+            padding: 35px;
             border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(211, 47, 47, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             border-top: 6px solid var(--dark-yellow);
         }
 
@@ -106,7 +231,8 @@
             text-align: center;
             color: var(--primary-red);
             margin-bottom: 25px;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 24px;
         }
 
         .form-group {
@@ -122,7 +248,7 @@
 
         input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             box-sizing: border-box;
@@ -142,13 +268,13 @@
             background-color: var(--primary-red);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 15px;
             border-radius: 8px;
             font-size: 18px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 800;
             font-family: 'Cairo', sans-serif;
-            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
             transition: all 0.3s;
         }
 
@@ -186,10 +312,6 @@
             background-color: #1ebe5d;
         }
 
-        .whatsapp-btn i {
-            font-size: 22px;
-        }
-
         footer {
             text-align: center;
             padding: 15px;
@@ -204,6 +326,83 @@
             margin-top: 15px;
             font-weight: 700;
         }
+
+        /* 📱 تعديلات خاصة بشاشات الجوال (Responsive Design) 📱 */
+        @media (max-width: 768px) {
+            header {
+                padding: 50px 10px 20px;
+            }
+
+            .discount-badge {
+                font-size: 12px;
+                padding: 5px 12px;
+                top: 10px;
+                right: 10px;
+            }
+
+            .wood-board {
+                padding: 15px 20px; 
+                border-width: 3px;
+                margin-top: 15px;
+            }
+
+            .wood-board h1 {
+                font-size: 32px; 
+            }
+
+            .red-ribbon {
+                font-size: 16px;
+                padding: 8px 20px;
+                margin-top: -12px;
+            }
+
+            .info-bar {
+                gap: 10px;
+            }
+
+            .info-badge {
+                font-size: 13px;
+                padding: 6px 10px;
+                width: 100%; 
+                justify-content: center;
+            }
+
+            .info-badge.location i {
+                font-size: 16px;
+            }
+
+            .badge-contact {
+                flex-direction: row;
+                gap: 5px;
+            }
+            
+            .contact-action {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .phone-number {
+                font-size: 15px;
+            }
+
+            .contact-text {
+                font-size: 12px;
+                margin-right: 5px;
+            }
+
+            .card {
+                padding: 20px; 
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -212,15 +411,39 @@
         <div class="discount-badge">
             <i class="fa-solid fa-tag"></i> خصومات 50% على الوجبات!
         </div>
-        <div class="logo-container">
-            <i class="fa-solid fa-utensils"></i>
+        
+        <!-- اللوحة المزخرفة -->
+        <div class="wood-board">
+            <h1>مطعم الطيبين</h1>
         </div>
-        <h1>مطعم الطيبين</h1>
+        
+        <!-- الشريط الأحمر -->
+        <div class="red-ribbon">
+            للأكلات الشعبية المصرية
+        </div>
+
+        <!-- شريط العنوان وأرقام التواصل -->
+        <div class="info-bar">
+            <div class="info-badge location">
+                <i class="fa-solid fa-location-dot"></i> مكة المكرمة حي العتيبية شارع الجزائر
+            </div>
+            <!-- تم جعل الأزرار هنا تفاعلية للاتصال والمراسلة مع إضافة النص -->
+            <div class="info-badge badge-contact">
+                <span class="contact-text">للطلبات والحجوزات:</span>
+                <a href="https://wa.me/966561422312" target="_blank" class="contact-action wa-action" title="مراسلة عبر واتساب">
+                    <i class="fa-brands fa-whatsapp"></i> واتساب
+                </a>
+                <a href="tel:0561422312" class="contact-action call-action" title="اتصال هاتفي">
+                    <i class="fa-solid fa-phone"></i> اتصال
+                </a>
+                <span dir="ltr" class="phone-number">0561422312</span>
+            </div>
+        </div>
     </header>
 
     <div class="container">
         <div class="card">
-            <h2>سجل معنا في مسابقة السحب</h2>
+            <h2>سجل معنا في السحب</h2>
             <form id="sweepstakesForm">
                 <div class="form-group">
                     <label for="name">الاسم:</label>
@@ -235,7 +458,8 @@
             </form>
 
             <div class="whatsapp-section">
-                <a href="https://whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a" target="_blank" class="whatsapp-btn">
+                <!-- تم وضع الرابط الفعلي للواتساب هنا أيضاً -->
+                <a href="https://wa.me/966561422312" target="_blank" class="whatsapp-btn">
                     <i class="fa-brands fa-whatsapp"></i> تابعنا على الواتس
                 </a>
             </div>
@@ -248,7 +472,7 @@
 
     <script>
         // ضع هنا الرابط الجديد الذي نسخته من جوجل شيت
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby-Gqxk3D1LfQ3WhHllEv1kOGmWu4D5M85wN3K0C2Z1XjXfTF2IJmTHFgEn1XYTg_rl/exec';
+        const scriptURL = 'ضع_رابط_الـ_Web_App_هنا';
 
         const form = document.getElementById('sweepstakesForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -268,14 +492,12 @@
             submitBtn.textContent = 'جاري الإرسال...';
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => response.json()) // قراءة رد جوجل شيت
+                .then(response => response.json())
                 .then(data => {
                     if(data.result === 'error') {
-                        // حالة تكرار الرقم
                         message.textContent = data.message;
                         message.style.color = 'red';
                     } else {
-                        // حالة النجاح
                         message.textContent = data.message;
                         message.style.color = 'green';
                         form.reset();
