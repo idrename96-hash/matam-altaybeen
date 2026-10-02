@@ -528,19 +528,48 @@
         </div>
     </div>
 
+    <!-- قالب صورة الإعلان الفاخر والمحدث مع صلاحية 48 ساعة -->
     <div id="shareCardContainer">
-        <div id="shareCard" style="width: 600px; background: linear-gradient(135deg, #9a0007, #d32f2f); padding: 40px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 20px; border: 6px solid #fbc02d;">
-            <h2 style="color: #ffeb3b; font-size: 32px; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> (إعلان الفائزين في السحب اليومي     (مطعم الطيبيبن للأكلات المصرية</h2>
-            <p style="font-size: 16px; margin-bottom: 25px; color: #ffcdd2;">ألف مبروك لأصحاب الحظ السعيد معنا اليوم!</p>
-            <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;"></div>
-            <div style="font-size: 14px; color: #ffeb3b; font-weight: 700; border-top: 2px dashed rgba(255,255,255,0.3); padding-top: 15px;">
-                مكة المكرمة - حي العتيبية - شارع الجزائر | 0561422312
+        <div id="shareCard" style="width: 650px; background: linear-gradient(135deg, #7b0005 0%, #b71c1c 50%, #d32f2f 100%); padding: 45px 35px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 24px; border: 5px solid #ffca28; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; overflow: hidden;">
+            
+            <div style="position: absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: rgba(255,215,0,0.1); border-radius: 50%;"></div>
+            <div style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,215,0,0.1); border-radius: 50%;"></div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 38px; color: #ffca28; margin-bottom: 5px;">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h1 style="color: #ffeb3b; font-size: 28px; font-weight: 900; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">إعلان الفائزين في السحب اليومي</h1>
+                <p style="font-size: 19px; font-weight: 700; color: #ffffff; margin: 6px 0 0 0;">مطعم الطيبين للأكلات المصرية</p>
+            </div>
+
+            <!-- صندوق التهنئة -->
+            <div style="background: rgba(0, 0, 0, 0.25); display: inline-block; padding: 5px 18px; border-radius: 30px; font-size: 14px; color: #ffcdd2; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                🎉 ألف مبروك لأصحاب الحظ السعيد معنا اليوم!
+            </div>
+
+            <!-- صندوق صلاحية العرض (48 ساعة) -->
+            <div style="background: rgba(255, 193, 7, 0.15); border: 2px dashed #ffca28; padding: 8px 15px; border-radius: 12px; font-size: 15px; color: #ffeb3b; font-weight: 800; margin-bottom: 22px;">
+                ⏳ سينتهي هذا العرض في يوم: <span id="expiryDateText" style="color: #ffffff;">---</span>
+            </div>
+
+            <!-- قائمة الفائزين الفخمة -->
+            <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+                <!-- سيتم تعبئة الفائزين هنا -->
+            </div>
+
+            <div style="font-size: 13px; color: #ffe082; font-weight: 700; border-top: 2px dashed rgba(255,215,0,0.4); padding-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-location-dot" style="color: #ffca28;"></i>
+                <span>مكة المكرمة - حي العتيبية - شارع الجزائر</span>
+                <span style="margin: 0 5px;">|</span>
+                <i class="fa-solid fa-phone" style="color: #ffca28;"></i>
+                <span dir="ltr">0561422312</span>
             </div>
         </div>
     </div>
 
     <footer>
-        <span>  [NEGM]- جميع الحقوق محفوظة © مطعم الطيبين </span>
+        <span>[NEGM] - جميع الحقوق محفوظة © مطعم الطيبين</span>
         <button type="button" class="secret-admin-trigger" onclick="toggleAdminPanel()">NEGM</button>
     </footer>
 
@@ -646,13 +675,22 @@
                 return;
             }
 
+            // حساب تاريخ بعد 48 ساعة (يومين) تلقائياً
+            let expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 2);
+            let options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
+            document.getElementById('expiryDateText').textContent = expiryDate.toLocaleDateString('ar-SA', options);
+
             const cardList = document.getElementById('cardWinnersList');
             let cardHtml = "";
-            latestWinners.forEach(w => {
+            latestWinners.forEach((w, index) => {
                 cardHtml += `
-                    <div style="background: rgba(0,0,0,0.25); padding: 12px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.2);">
-                        <span style="font-size: 20px; font-weight: 700; color: #fff;">🏆 ${w.name}</span>
-                        <span style="font-size: 20px; font-weight: 900; color: #ffeb3b;" dir="ltr">${maskPhone(w.phone)}</span>
+                    <div style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)); padding: 14px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid rgba(255, 215, 0, 0.4);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="background: #ffca28; color: #7b0005; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px;">#${index + 1}</span>
+                            <span style="font-size: 19px; font-weight: 800; color: #ffffff;">🏆 ${w.name}</span>
+                        </div>
+                        <span style="font-size: 19px; font-weight: 900; color: #ffeb3b; background: rgba(255,235,59,0.15); padding: 4px 12px; border-radius: 8px;" dir="ltr">${maskPhone(w.phone)}</span>
                     </div>
                 `;
             });
@@ -661,7 +699,7 @@
             const container = document.getElementById('shareCardContainer');
             container.style.left = '0';
 
-            html2canvas(document.getElementById('shareCard'), { scale: 2 }).then(canvas => {
+            html2canvas(document.getElementById('shareCard'), { scale: 2, useCORS: true }).then(canvas => {
                 container.style.left = '-9999px';
                 let link = document.createElement('a');
                 link.download = 'فائزين_مسابقة_مطعم_الطيبين.png';
