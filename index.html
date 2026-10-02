@@ -490,21 +490,21 @@
             </form>
 
             <div class="whatsapp-section">
-                <a href="url?id=136" target="_blank" class="whatsapp-btn">
+                <a href="https://wa.me/966561422312" target="_blank" class="whatsapp-btn">
                     <i class="fa-brands fa-whatsapp"></i> تابعنا على الواتس
                 </a>
             </div>
         </div>
 
-        <!-- واجهة العملاء لعرض آخر الفائزين فقط (تسحب تلقائياً من جوجل شيت) -->
+        <!-- لوحة شرف الفائزين للعملاء -->
         <div class="winners-public-section">
             <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
             <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
             
             <div id="publicWinnersList">
                 <div class="winner-row">
-                    <div class="w-name"><i class="fa-solid fa-medal"></i> جاري تحميل آخر الفائزين...</div>
-                    <div class="w-phone" dir="ltr">--</div>
+                    <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
+                    <div class="w-phone" dir="ltr">056****2312</div>
                 </div>
             </div>
         </div>
@@ -518,17 +518,16 @@
                 <input type="number" id="winnerCount" value="1" min="1" max="10">
             </div>
 
-            <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي (يستبعد الفائزين السابقين تلقائياً)</button>
-            <button type="button" class="publish-btn" onclick="publishWinners()">📢 نشر الفائزين في واجهة العملاء</button>
+            <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي مباشر من الشيت</button>
+            <button type="button" class="publish-btn" onclick="publishWinners()">📢 نشر الفائزين (وحفظهم في الشيت)</button>
             <button type="button" class="image-btn" onclick="generateWinnerImage()">📷 إنشاء وتنزيل صورة الفائزين للمشاركة</button>
             
             <div class="winner-display-box" id="winnerBox">
-                <span>اضغط الزر لجلب المشاركين المتاحين واختيار الفائزين...</span>
+                <span>اضغط الزر لجلب المشاركين واختيار الفائزين...</span>
             </div>
         </div>
     </div>
 
-    <!-- قالب الصورة المخفي -->
     <div id="shareCardContainer">
         <div id="shareCard" style="width: 600px; background: linear-gradient(135deg, #9a0007, #d32f2f); padding: 40px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 20px; border: 6px solid #fbc02d;">
             <h2 style="color: #ffeb3b; font-size: 32px; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> إعلان الفائزين في مسابقة مطعم الطيبين</h2>
@@ -549,10 +548,6 @@
         const scriptURL = 'https://script.google.com/macros/s/AKfycby9d3vLD3lgJyoGIk37R9D5vWNCvuoy3crey9pq-KCdW_FavviHfz1jSojqttqxUfj8/exec';
         let latestWinners = [];
 
-        document.addEventListener("DOMContentLoaded", function() {
-            loadPublishedWinners();
-        });
-
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const pass = prompt("أدخل كلمة مرور الإدارة:");
@@ -572,18 +567,17 @@
             return start + "****" + end;
         }
 
-        // سحب الفائزين عشوائياً (الشيت يقوم باستبعاد الفائزين السابقين تلقائياً)
         function fetchAndPickWinners() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
 
-            box.innerHTML = '<span>جاري فحص المشاركين واستبعاد الفائزين السابقين... 🔄</span>';
+            box.innerHTML = '<span>جاري الاتصال بقاعدة البيانات وجلب المشتركين... 🔄</span>';
 
-            fetch(scriptURL + '?action=getParticipants')
+            fetch(scriptURL)
                 .then(response => response.json())
                 .then(data => {
                     if (!data || data.length === 0) {
-                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد مشاركات جديدة متاحة للسحب (جميعهم فازوا مسبقاً أو لا توجد بيانات)!</span>';
+                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد بيانات مسجلة في الشيت حتى الآن!</span>';
                         return;
                     }
 
@@ -611,15 +605,17 @@
                 });
         }
 
-        // عرض آخر الفائزين فقط في واجهة العملاء
-        function renderPublicWinners(winnersArray) {
-            const publicList = document.getElementById('publicWinnersList');
-            if (!winnersArray || winnersArray.length === 0) {
-                publicList.innerHTML = '<div class="winner-row"><div class="w-name">لا توجد مسحوبة معلنة حتى الآن</div></div>';
+        // نشر الفائزين للعملاء + حفظهم تلقائياً في ورقة جديدة داخل شيت جوجل
+        function publishWinners() {
+            if (latestWinners.length === 0) {
+                alert("الرجاء إجراء السحب أولاً قبل النشر!");
                 return;
             }
+
+            // تحديث واجهة العملاء
+            const publicList = document.getElementById('publicWinnersList');
             let html = "";
-            winnersArray.forEach(w => {
+            latestWinners.forEach(w => {
                 html += `
                     <div class="winner-row">
                         <div class="w-name"><i class="fa-solid fa-medal"></i> ${w.name}</div>
@@ -628,43 +624,22 @@
                 `;
             });
             publicList.innerHTML = html;
-        }
 
-        // جلب آخر الفائزين المنشورين من الشيت
-        function loadPublishedWinners() {
-            fetch(scriptURL + '?action=getWinners')
-                .then(response => response.json())
-                .then(winners => {
-                    if (winners && winners.length > 0) {
-                        renderPublicWinners(winners);
-                    }
-                })
-                .catch(e => {});
-        }
-
-        // نشر آخر الفائزين وحفظهم في الشيت (ويتم تسجيلهم كفائزين سابقين لعدم تكرارهم)
-        function publishWinners() {
-            if (latestWinners.length === 0) {
-                alert("الرجاء إجراء السحب أولاً قبل النشر!");
-                return;
-            }
-
+            // إرسال الفائزين وحفظهم في جدول الشيت (ورقة الفائزين)
             let formData = new FormData();
-            formData.append('action', 'saveWinners');
-            formData.append('winners', JSON.stringify(latestWinners));
+            formData.append("action", "saveWinners");
+            formData.append("winners", JSON.stringify(latestWinners));
 
             fetch(scriptURL, { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
-                    renderPublicWinners(latestWinners);
-                    alert("تم نشر آخر الفائزين وحفظهم في النظام واستبعادهم من السحوبات القادمة بنجاح! 🎉");
+                    alert("تم نشر الفائزين في واجهة العملاء وحفظهم في ملف الإكسيل (ورقة الفائزين) بنجاح! 🎉");
                 })
                 .catch(error => {
-                    alert("حدث خطأ أثناء نشر الفائزين.");
+                    alert("تم النشر للعملاء، ولكن حدث خطأ أثناء الحفظ في الشيت.");
                 });
         }
 
-        // توليد صورة الإعلان لآخر الفائزين فقط
         function generateWinnerImage() {
             if (latestWinners.length === 0) {
                 alert("الرجاء إجراء السحب أولاً لإنشاء صورة الإعلان!");
@@ -688,15 +663,13 @@
 
             html2canvas(document.getElementById('shareCard'), { scale: 2 }).then(canvas => {
                 container.style.left = '-9999px';
-                
                 let link = document.createElement('a');
-                link.download = 'آخر_فائزين_مسابقة_مطعم_الطيبين.png';
+                link.download = 'فائزين_مسابقة_مطعم_الطيبين.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
 
-        // إرسال المشاركات
         const form = document.getElementById('sweepstakesForm');
         const submitBtn = document.getElementById('submitBtn');
         const message = document.getElementById('message');
