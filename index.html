@@ -199,18 +199,20 @@
             margin-bottom: 15px;
             align-items: center;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .admin-controls input[type="number"] {
-            width: 80px;
+        .admin-controls input {
             padding: 10px;
             border-radius: 8px;
             border: 2px solid #546e7a;
             background: #1e272c;
             color: white;
             text-align: center;
-            font-size: 16px;
+            font-size: 14px;
         }
+        .admin-controls input[type="number"] { width: 60px; }
+        .admin-controls input[type="text"] { width: 150px; }
 
         .draw-btn {
             background-color: #2e7d32;
@@ -260,7 +262,7 @@
             font-weight: 700;
             color: #fff;
             min-height: 60px;
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
             text-align: right;
             display: flex;
@@ -277,10 +279,13 @@
             align-items: center;
         }
 
-        .winner-item span {
-            color: var(--accent-yellow);
-            font-weight: 900;
+        .winner-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
+        .winner-info span.name { color: var(--accent-yellow); font-weight: 900; }
+        .winner-info span.prize { color: #ffcdd2; font-size: 12px; font-weight: 600; }
 
         .secret-admin-trigger {
             background: transparent;
@@ -311,7 +316,7 @@
             color: #444;
         }
 
-        input {
+        input.form-input {
             width: 100%;
             padding: 14px 15px;
             border: 2px solid #e0e0e0;
@@ -479,11 +484,11 @@
             <form id="sweepstakesForm">
                 <div class="form-group">
                     <label for="name">الاسم:</label>
-                    <input type="text" id="name" name="name" required placeholder="أدخل اسمك الكامل">
+                    <input type="text" id="name" name="name" class="form-input" required placeholder="أدخل اسمك الكامل">
                 </div>
                 <div class="form-group">
                     <label for="phone">رقم الواتساب:</label>
-                    <input type="tel" id="phone" name="phone" required placeholder="05xxxxxxxx">
+                    <input type="tel" id="phone" name="phone" class="form-input" required placeholder="05xxxxxxxx">
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">اشترك</button>
                 <p id="message"></p>
@@ -496,15 +501,14 @@
             </div>
         </div>
 
-        <!-- لوحة شرف الفائزين للعملاء -->
+        <!-- لوحة شرف الفائزين للعملاء (تجلب الفائزين تلقائياً) -->
         <div class="winners-public-section">
             <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
             <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
             
             <div id="publicWinnersList">
                 <div class="winner-row">
-                    <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
-                    <div class="w-phone" dir="ltr">056****2312</div>
+                    <div class="w-name"><i class="fa-solid fa-medal"></i> جاري التحميل...</div>
                 </div>
             </div>
         </div>
@@ -514,8 +518,11 @@
             <h3><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة (السحب الآلي)</h3>
             
             <div class="admin-controls">
-                <label for="winnerCount">عدد الفائزين:</label>
+                <label for="winnerCount">العدد:</label>
                 <input type="number" id="winnerCount" value="1" min="1" max="10">
+                
+                <label for="prizeDesc" style="margin-left: 5px;">الجائزة:</label>
+                <input type="text" id="prizeDesc" value="وجبة مجانية" placeholder="أدخل الجائزة">
             </div>
 
             <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي مباشر من الشيت</button>
@@ -528,7 +535,7 @@
         </div>
     </div>
 
-    <!-- قالب صورة الإعلان الفاخر والمحدث مع صلاحية 48 ساعة -->
+    <!-- قالب صورة الإعلان الفاخر مع صلاحية 48 ساعة -->
     <div id="shareCardContainer">
         <div id="shareCard" style="width: 650px; background: linear-gradient(135deg, #7b0005 0%, #b71c1c 50%, #d32f2f 100%); padding: 45px 35px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 24px; border: 5px solid #ffca28; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; overflow: hidden;">
             
@@ -543,19 +550,17 @@
                 <p style="font-size: 19px; font-weight: 700; color: #ffffff; margin: 6px 0 0 0;">مطعم الطيبين للأكلات المصرية</p>
             </div>
 
-            <!-- صندوق التهنئة -->
             <div style="background: rgba(0, 0, 0, 0.25); display: inline-block; padding: 5px 18px; border-radius: 30px; font-size: 14px; color: #ffcdd2; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
                 🎉 ألف مبروك لأصحاب الحظ السعيد معنا اليوم!
             </div>
 
-            <!-- صندوق صلاحية العرض (48 ساعة) -->
             <div style="background: rgba(255, 193, 7, 0.15); border: 2px dashed #ffca28; padding: 8px 15px; border-radius: 12px; font-size: 15px; color: #ffeb3b; font-weight: 800; margin-bottom: 22px;">
                 ⏳ سينتهي هذا العرض في يوم: <span id="expiryDateText" style="color: #ffffff;">---</span>
             </div>
 
             <!-- قائمة الفائزين الفخمة -->
             <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
-                <!-- سيتم تعبئة الفائزين هنا -->
+                <!-- سيتم تعبئة الفائزين مع الجائزة هنا -->
             </div>
 
             <div style="font-size: 13px; color: #ffe082; font-weight: 700; border-top: 2px dashed rgba(255,215,0,0.4); padding-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;">
@@ -576,6 +581,42 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycby9d3vLD3lgJyoGIk37R9D5vWNCvuoy3crey9pq-KCdW_FavviHfz1jSojqttqxUfj8/exec';
         let latestWinners = [];
+
+        // جلب الفائزين تلقائياً وعرضهم في واجهة العملاء عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch(scriptURL)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.winners) {
+                        updatePublicWinnersUI(data.winners);
+                    }
+                })
+                .catch(err => console.log("خطأ في جلب البيانات الأولية"));
+        });
+
+        function updatePublicWinnersUI(winnersArray) {
+            const publicList = document.getElementById('publicWinnersList');
+            if (!winnersArray || winnersArray.length === 0) {
+                publicList.innerHTML = '<p style="color:#777; font-size:14px; margin:5px 0;">لا يوجد فائزون حتى الآن، كن أنت أول الفائزين!</p>';
+                return;
+            }
+
+            let html = "";
+            let recentWinners = winnersArray.slice(0, 3);
+            recentWinners.forEach(w => {
+                let prizeText = w.prize ? `<span style="font-size: 12px; color: #b71c1c; display:block; margin-top:2px;">🎁 ${w.prize}</span>` : "";
+                html += `
+                    <div class="winner-row">
+                        <div class="w-name">
+                            <i class="fa-solid fa-medal"></i> 
+                            <div>${w.name} ${prizeText}</div>
+                        </div>
+                        <div class="w-phone" dir="ltr">${maskPhone(w.phone)}</div>
+                    </div>
+                `;
+            });
+            publicList.innerHTML = html;
+        }
 
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
@@ -599,32 +640,45 @@
         function fetchAndPickWinners() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
+            const prizeInput = document.getElementById('prizeDesc').value || "جائزة قيمة";
 
-            box.innerHTML = '<span>جاري الاتصال بقاعدة البيانات وجلب المشتركين... 🔄</span>';
+            box.innerHTML = '<span>جاري الاتصال بقاعدة البيانات وجلب المشتركين المتاحين... 🔄</span>';
 
             fetch(scriptURL)
                 .then(response => response.json())
                 .then(data => {
-                    if (!data || data.length === 0) {
-                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد بيانات مسجلة في الشيت حتى الآن!</span>';
+                    let participants = Array.isArray(data) ? data : (data.participants || []);
+
+                    if (!participants || participants.length === 0) {
+                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد مشاركات جديدة متاحة للسحب (ربما فاز الجميع)!</span>';
                         return;
                     }
 
                     let resultsHTML = "";
                     latestWinners = [];
                     let chosen = [];
-                    let limit = Math.min(countInput, data.length);
+                    let limit = Math.min(countInput, participants.length);
 
                     for (let i = 0; i < limit; i++) {
                         let rand;
                         do {
-                            rand = Math.floor(Math.random() * data.length);
+                            rand = Math.floor(Math.random() * participants.length);
                         } while (chosen.includes(rand));
                         chosen.push(rand);
 
-                        let w = data[rand];
+                        let w = participants[rand];
+                        w.prize = prizeInput; // إضافة الجائزة
                         latestWinners.push(w);
-                        resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
+                        
+                        resultsHTML += `
+                            <div class="winner-item">
+                                <div class="winner-info">
+                                    <span class="name">🏆 ${w.name}</span>
+                                    <span class="prize">🎁 ${w.prize}</span>
+                                </div>
+                                <span dir="ltr">${maskPhone(w.phone)}</span>
+                            </div>
+                        `;
                     }
 
                     box.innerHTML = resultsHTML;
@@ -634,27 +688,12 @@
                 });
         }
 
-        // نشر الفائزين للعملاء + حفظهم تلقائياً في ورقة جديدة داخل شيت جوجل
         function publishWinners() {
             if (latestWinners.length === 0) {
                 alert("الرجاء إجراء السحب أولاً قبل النشر!");
                 return;
             }
 
-            // تحديث واجهة العملاء
-            const publicList = document.getElementById('publicWinnersList');
-            let html = "";
-            latestWinners.forEach(w => {
-                html += `
-                    <div class="winner-row">
-                        <div class="w-name"><i class="fa-solid fa-medal"></i> ${w.name}</div>
-                        <div class="w-phone" dir="ltr">${maskPhone(w.phone)}</div>
-                    </div>
-                `;
-            });
-            publicList.innerHTML = html;
-
-            // إرسال الفائزين وحفظهم في جدول الشيت (ورقة الفائزين)
             let formData = new FormData();
             formData.append("action", "saveWinners");
             formData.append("winners", JSON.stringify(latestWinners));
@@ -662,10 +701,11 @@
             fetch(scriptURL, { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
-                    alert("تم نشر الفائزين في واجهة العملاء وحفظهم في ملف الإكسيل (ورقة الفائزين) بنجاح! 🎉");
+                    updatePublicWinnersUI(latestWinners);
+                    alert("تم نشر الفائزين في واجهة العملاء وحفظهم في ملف الإكسيل بنجاح! 🎉");
                 })
                 .catch(error => {
-                    alert("تم النشر للعملاء، ولكن حدث خطأ أثناء الحفظ في الشيت.");
+                    alert("حدث خطأ أثناء الحفظ في الشيت.");
                 });
         }
 
@@ -675,7 +715,6 @@
                 return;
             }
 
-            // حساب تاريخ بعد 48 ساعة (يومين) تلقائياً
             let expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 2);
             let options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -685,12 +724,17 @@
             let cardHtml = "";
             latestWinners.forEach((w, index) => {
                 cardHtml += `
-                    <div style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)); padding: 14px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid rgba(255, 215, 0, 0.4);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="background: #ffca28; color: #7b0005; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px;">#${index + 1}</span>
-                            <span style="font-size: 19px; font-weight: 800; color: #ffffff;">🏆 ${w.name}</span>
+                    <div style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)); padding: 14px 20px; border-radius: 12px; border: 2px solid rgba(255, 215, 0, 0.4);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="background: #ffca28; color: #7b0005; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px;">#${index + 1}</span>
+                                <span style="font-size: 19px; font-weight: 800; color: #ffffff;">🏆 ${w.name}</span>
+                            </div>
+                            <span style="font-size: 19px; font-weight: 900; color: #ffeb3b; background: rgba(255,235,59,0.15); padding: 4px 12px; border-radius: 8px;" dir="ltr">${maskPhone(w.phone)}</span>
                         </div>
-                        <span style="font-size: 19px; font-weight: 900; color: #ffeb3b; background: rgba(255,235,59,0.15); padding: 4px 12px; border-radius: 8px;" dir="ltr">${maskPhone(w.phone)}</span>
+                        <div style="font-size: 15px; color: #ffcdd2; font-weight: 700; text-align: right; margin-right: 40px;">
+                            🎁 الجائزة: <span style="color: #ffca28;">${w.prize}</span>
+                        </div>
                     </div>
                 `;
             });
@@ -730,13 +774,13 @@
                         form.reset();
                     }
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'إرسال المشاركة';
+                    submitBtn.textContent = 'اشترك';
                 })
                 .catch(error => {
                     message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
                     message.style.color = 'red';
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'إرسال المشاركة';
+                    submitBtn.textContent = 'اشترك';
                 });
         });
     </script>
