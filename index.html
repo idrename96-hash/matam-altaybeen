@@ -223,6 +223,32 @@
             cursor: pointer;
             font-weight: 800;
             width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .publish-btn {
+            background-color: #c62828;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .image-btn {
+            background-color: #0277bd;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
             margin-bottom: 15px;
         }
 
@@ -366,6 +392,7 @@
             border-radius: 8px;
             border: 1px solid #e0e0e0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 8px;
         }
 
         .winner-row .w-name {
@@ -405,7 +432,16 @@
             margin-top: 15px;
             font-weight: 700;
         }
+
+        /* تصميم كارت الإعلان الذي سيتم تحويله إلى صورة */
+        #shareCardContainer {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+        }
     </style>
+    <!-- مكتبة لتقاط وتوليد الصور من HTML مباشرة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -463,18 +499,20 @@
             </div>
         </div>
 
-        <!-- لوحة شرف الفائزين للعملاء أسفل الصفحة -->
+        <!-- لوحة شرف الفائزين للعملاء (تتحدث أوتوماتيكياً عندما تنشرها من الإدارة) -->
         <div class="winners-public-section">
             <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
             <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
             
-            <div class="winner-row">
-                <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
-                <div class="w-phone" dir="ltr">056****2312</div>
+            <div id="publicWinnersList">
+                <div class="winner-row">
+                    <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
+                    <div class="w-phone" dir="ltr">056****2312</div>
+                </div>
             </div>
         </div>
 
-        <!-- لوحة تحكم الإدارة السرية (تسحب أوتوماتيكياً من الشيت) -->
+        <!-- لوحة تحكم الإدارة السرية -->
         <div class="admin-section" id="adminPanel">
             <h3><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة (السحب الآلي)</h3>
             
@@ -484,9 +522,578 @@
             </div>
 
             <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي مباشر من الشيت</button>
+            <button type="button" class="publish-btn" onclick="publishWinners()">📢 نشر الفائزين في واجهة العملاء</button>
+            <button type="button" class="image-btn" onclick="generateWinnerImage()">📷 إنشاء وتنزيل صورة الفائزين للمشاركة</button>
             
             <div class="winner-display-box" id="winnerBox">
                 <span>اضغط الزر لجلب المشاركين واختيار الفائزين...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- قالب مخفي لتوليد صورة الفائزين الاحترافية -->
+    <div id="shareCardContainer">
+        <div id="shareCard" style="width: 600px; background: linear-gradient(135deg, #9a0007, #d32f2f); padding: 40px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 20px; border: 6px solid #fbc02d;">
+            <h2 style="color: #ffeb3b; font-size: 32px; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> إعلان الفائزين في مسابقة مطعم الطيبين</h2>
+            <p style="font-size: 16px; margin-bottom: 25px; color: #ffcdd2;">ألف مبروك لأصحاب الحظ السعيد معنا اليوم!</p>
+            <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+                <!-- سيتم تعبئة الفائزين هنا برمجياً -->
+            </div>
+            <div style="font-size: 14px; color: #ffeb3b; font-weight: 700; border-top: 2px dashed rgba(255,255,255,0.3); padding-top: 15px;">
+                مكة المكرمة - حي العتيبية - شارع الجزائر | 0561422312
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <span>جميع الحقوق محفوظة © مطعم الطيبين</span>
+        <button type="button" class="secret-admin-trigger" onclick="toggleAdminPanel()">تسجيل دخول الإدارة</button>
+    </footer>
+
+    <script>
+        const scriptURL = '<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة سحب - مطعم الطيبين</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #d32f2f;
+            --dark-red: #9a0007;
+            --dark-yellow: #fbc02d;
+            --accent-yellow: #ffeb3b;
+            --bg-color: #f4f4f9;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Cairo', Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: url('https://www.thisisamman.com/wp-content/uploads/2023/01/%D8%A3%D9%83%D9%84.webp') center/cover no-repeat;
+            text-align: center;
+            padding: 60px 20px 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-bottom: 5px solid var(--dark-yellow);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .discount-badge {
+            background-color: var(--dark-yellow);
+            color: #b71c1c;
+            font-size: 15px;
+            font-weight: 900;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 5;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .wood-board {
+            background: rgba(0, 0, 0, 0.85); 
+            border: 4px solid var(--dark-yellow);
+            border-radius: 10px;
+            padding: 20px 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+            max-width: 90%;
+        }
+
+        .wood-board h1 {
+            margin: 0;
+            font-size: 45px;
+            font-weight: 900;
+            color: var(--accent-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .red-ribbon {
+            background: linear-gradient(to right, #b71c1c, #d32f2f, #b71c1c);
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            padding: 10px 50px;
+            border-radius: 5px;
+            margin-top: -10px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+            border: 2px solid #8e0000;
+        }
+
+        .info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .info-badge {
+            background-color: white;
+            color: var(--text-color);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .info-badge.location i {
+            color: var(--primary-red);
+        }
+
+        .badge-contact {
+            background-color: #1a4a28;
+            color: white;
+            justify-content: center;
+            padding: 6px 15px;
+        }
+        
+        .contact-action {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .phone-number {
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 1px;
+            margin-right: 5px;
+        }
+
+        .contact-text {
+            font-size: 14px;
+            font-weight: 700;
+            margin-right: 10px;
+            color: #ffeb3b;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            border-top: 6px solid var(--dark-yellow);
+        }
+
+        /* لوحة التحكم السرية للإدارة */
+        .admin-section {
+            background: linear-gradient(135deg, #263238, #37474f);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            border-top: 6px solid var(--dark-yellow);
+            color: white;
+            text-align: center;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        .admin-section h3 {
+            color: var(--accent-yellow);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-controls input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #546e7a;
+            background: #1e272c;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .draw-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .publish-btn {
+            background-color: #c62828;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .image-btn {
+            background-color: #0277bd;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 800;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .winner-display-box {
+            background: #1e272c;
+            border: 2px dashed var(--dark-yellow);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            min-height: 60px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .winner-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .winner-item span {
+            color: var(--accent-yellow);
+            font-weight: 900;
+        }
+
+        .secret-admin-trigger {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 5px;
+            margin-top: 10px;
+            text-decoration: underline;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-red);
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .whatsapp-section {
+            margin-top: 25px;
+            text-align: center;
+            border-top: 2px dashed #eee;
+            padding-top: 20px;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #25d366;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .winners-public-section {
+            background: linear-gradient(135deg, #ffffff, #fffde7);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            border-top: 6px solid var(--dark-yellow);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .winners-public-section h3 {
+            color: #b71c1c;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        .winners-public-section p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .winner-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 8px;
+        }
+
+        .winner-row .w-name {
+            font-weight: 700;
+            color: #333;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .winner-row .w-name i {
+            color: var(--dark-yellow);
+        }
+
+        .winner-row .w-phone {
+            font-weight: 900;
+            color: #2e7d32;
+            letter-spacing: 2px;
+            font-size: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #333;
+            color: #ffeb3b;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 700;
+        }
+
+        /* تصميم كارت الإعلان الذي سيتم تحويله إلى صورة */
+        #shareCardContainer {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+        }
+    </style>
+    <!-- مكتبة لتقاط وتوليد الصور من HTML مباشرة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="discount-badge">
+            <i class="fa-solid fa-tag"></i> خصومات 50% على الوجبات!
+        </div>
+        
+        <div class="wood-board">
+            <h1>مطعم الطيبين</h1>
+        </div>
+        
+        <div class="red-ribbon">
+            للأكلات الشعبية المصرية
+        </div>
+
+        <div class="info-bar">
+            <div class="info-badge location">
+                <i class="fa-solid fa-location-dot"></i> مكة المكرمة حي العتيبية شارع الجزائر
+            </div>
+            <div class="info-badge badge-contact">
+                <span class="contact-text">للطلبات والحجوزات:</span>
+                <a href="https://wa.me/966561422312" target="_blank" class="contact-action wa-action" title="مراسلة عبر واتساب">
+                    <i class="fa-brands fa-whatsapp"></i> واتساب
+                </a>
+                <a href="tel:0561422312" class="contact-action call-action" title="اتصال هاتفي">
+                    <i class="fa-solid fa-phone"></i> اتصال
+                </a>
+                <span dir="ltr" class="phone-number">0561422312</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- نموذج التسجيل للعملاء -->
+        <div class="card">
+            <h2>سجل معنا في مسابقة السحب</h2>
+            <form id="sweepstakesForm">
+                <div class="form-group">
+                    <label for="name">الاسم:</label>
+                    <input type="text" id="name" name="name" required placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="phone">رقم الجوال:</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="05xxxxxxxx">
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">إرسال المشاركة</button>
+                <p id="message"></p>
+            </form>
+
+            <div class="whatsapp-section">
+                <a href="https://wa.me/966561422312" target="_blank" class="whatsapp-btn">
+                    <i class="fa-brands fa-whatsapp"></i> تابعنا على الواتس
+                </a>
+            </div>
+        </div>
+
+        <!-- لوحة شرف الفائزين للعملاء (تتحدث أوتوماتيكياً عندما تنشرها من الإدارة) -->
+        <div class="winners-public-section">
+            <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
+            <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
+            
+            <div id="publicWinnersList">
+                <div class="winner-row">
+                    <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
+                    <div class="w-phone" dir="ltr">056****2312</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- لوحة تحكم الإدارة السرية -->
+        <div class="admin-section" id="adminPanel">
+            <h3><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة (السحب الآلي)</h3>
+            
+            <div class="admin-controls">
+                <label for="winnerCount">عدد الفائزين:</label>
+                <input type="number" id="winnerCount" value="1" min="1" max="10">
+            </div>
+
+            <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي مباشر من الشيت</button>
+            <button type="button" class="publish-btn" onclick="publishWinners()">📢 نشر الفائزين في واجهة العملاء</button>
+            <button type="button" class="image-btn" onclick="generateWinnerImage()">📷 إنشاء وتنزيل صورة الفائزين للمشاركة</button>
+            
+            <div class="winner-display-box" id="winnerBox">
+                <span>اضغط الزر لجلب المشاركين واختيار الفائزين...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- قالب مخفي لتوليد صورة الفائزين الاحترافية -->
+    <div id="shareCardContainer">
+        <div id="shareCard" style="width: 600px; background: linear-gradient(135deg, #9a0007, #d32f2f); padding: 40px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 20px; border: 6px solid #fbc02d;">
+            <h2 style="color: #ffeb3b; font-size: 32px; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> إعلان الفائزين في مسابقة مطعم الطيبين</h2>
+            <p style="font-size: 16px; margin-bottom: 25px; color: #ffcdd2;">ألف مبروك لأصحاب الحظ السعيد معنا اليوم!</p>
+            <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+                <!-- سيتم تعبئة الفائزين هنا برمجياً -->
+            </div>
+            <div style="font-size: 14px; color: #ffeb3b; font-weight: 700; border-top: 2px dashed rgba(255,255,255,0.3); padding-top: 15px;">
+                مكة المكرمة - حي العتيبية - شارع الجزائر | 0561422312
             </div>
         </div>
     </div>
@@ -498,8 +1105,8 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycby9d3vLD3lgJyoGIk37R9D5vWNCvuoy3crey9pq-KCdW_FavviHfz1jSojqttqxUfj8/exec';
+        let latestWinners = []; // لتخزين الفائزين الحاليين
 
-        // إظهار أو إخفاء لوحة الإدارة بكلمة مرور 1234
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const pass = prompt("أدخل كلمة مرور الإدارة:");
@@ -511,7 +1118,6 @@
             }
         }
 
-        // إخفاء أجزاء من رقم الجوال
         function maskPhone(phone) {
             let cleanPhone = String(phone).replace(/\s+/g, '');
             if(cleanPhone.length < 7) return cleanPhone;
@@ -520,7 +1126,7 @@
             return start + "****" + end;
         }
 
-        // دالة السحب الآلي المباشر من جوجل شيت
+        // سحب الفائزين عشوائياً
         function fetchAndPickWinners() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
@@ -536,6 +1142,7 @@
                     }
 
                     let resultsHTML = "";
+                    latestWinners = []; // تفريغ القائمة السابقة
                     let chosen = [];
                     let limit = Math.min(countInput, data.length);
 
@@ -547,17 +1154,72 @@
                         chosen.push(rand);
 
                         let w = data[rand];
+                        latestWinners.push(w); // حفظ الفائز
                         resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
                     }
 
                     box.innerHTML = resultsHTML;
                 })
                 .catch(error => {
-                    box.innerHTML = '<span style="color:#ffcc80;">حدث خطأ أثناء جلب البيانات. تأكد من إتمام خطوة النشر الجديد (New Deployment) في أپس سكريبت.</span>';
+                    box.innerHTML = '<span style="color:#ffcc80;">حدث خطأ أثناء جلب البيانات.</span>';
                 });
         }
 
-        // كود إرسال مشاركات العملاء
+        // نشر الفائزين في واجهة العملاء بالأسفل
+        function publishWinners() {
+            if (latestWinners.length === 0) {
+                alert("الرجاء إجراء السحب أولاً قبل النشر!");
+                return;
+            }
+
+            const publicList = document.getElementById('publicWinnersList');
+            let html = "";
+            latestWinners.forEach(w => {
+                html += `
+                    <div class="winner-row">
+                        <div class="w-name"><i class="fa-solid fa-medal"></i> ${w.name}</div>
+                        <div class="w-phone" dir="ltr">${maskPhone(w.phone)}</div>
+                    </div>
+                `;
+            });
+            publicList.innerHTML = html;
+            alert("تم نشر الفائزين وتحديث واجهة العملاء بنجاح! 🎉");
+        }
+
+        // توليد وتحميل صورة الفائزين للمشاركة على الواتساب
+        function generateWinnerImage() {
+            if (latestWinners.length === 0) {
+                alert("الرجاء إجراء السحب أولاً لإنشاء صورة الإعلان!");
+                return;
+            }
+
+            const cardList = document.getElementById('cardWinnersList');
+            let cardHtml = "";
+            latestWinners.forEach(w => {
+                cardHtml += `
+                    <div style="background: rgba(0,0,0,0.25); padding: 12px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.2);">
+                        <span style="font-size: 20px; font-weight: 700; color: #fff;">🏆 ${w.name}</span>
+                        <span style="font-size: 20px; font-weight: 900; color: #ffeb3b;" dir="ltr">${maskPhone(w.phone)}</span>
+                    </div>
+                `;
+            });
+            cardList.innerHTML = cardHtml;
+
+            const container = document.getElementById('shareCardContainer');
+            container.style.left = '0'; // إظهار مؤقت للتحويل
+
+            html2canvas(document.getElementById('shareCard'), { scale: 2 }).then(canvas => {
+                container.style.left = '-9999px'; // إخفاء القالب مرة أخرى
+                
+                // تنزيل الصورة تلقائياً
+                let link = document.createElement('a');
+                link.download = 'فائزين_مسابقة_مطعم_الطيبين.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // إرسال المشاركات
         const form = document.getElementById('sweepstakesForm');
         const submitBtn = document.getElementById('submitBtn');
         const message = document.getElementById('message');
@@ -585,7 +1247,157 @@
                 .catch(error => {
                     message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
                     message.style.color = 'red';
-                    submitBtn.disabled, submitBtn.disabled = false;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'إرسال المشاركة';
+                });
+        });
+    </script>
+
+</body>
+</html>';
+        let latestWinners = []; // لتخزين الفائزين الحاليين
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            const pass = prompt("أدخل كلمة مرور الإدارة:");
+            if (pass === "1234") {
+                panel.style.display = panel.style.display === "block" ? "none" : "block";
+                panel.scrollIntoView({ behavior: 'smooth' });
+            } else if (pass !== null) {
+                alert("كلمة المرور غير صحيحة!");
+            }
+        }
+
+        function maskPhone(phone) {
+            let cleanPhone = String(phone).replace(/\s+/g, '');
+            if(cleanPhone.length < 7) return cleanPhone;
+            let start = cleanPhone.substring(0, 3);
+            let end = cleanPhone.substring(cleanPhone.length - 4);
+            return start + "****" + end;
+        }
+
+        // سحب الفائزين عشوائياً
+        function fetchAndPickWinners() {
+            const box = document.getElementById('winnerBox');
+            const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
+
+            box.innerHTML = '<span>جاري الاتصال بقاعدة البيانات وجلب المشتركين... 🔄</span>';
+
+            fetch(scriptURL)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد بيانات مسجلة في الشيت حتى الآن!</span>';
+                        return;
+                    }
+
+                    let resultsHTML = "";
+                    latestWinners = []; // تفريغ القائمة السابقة
+                    let chosen = [];
+                    let limit = Math.min(countInput, data.length);
+
+                    for (let i = 0; i < limit; i++) {
+                        let rand;
+                        do {
+                            rand = Math.floor(Math.random() * data.length);
+                        } while (chosen.includes(rand));
+                        chosen.push(rand);
+
+                        let w = data[rand];
+                        latestWinners.push(w); // حفظ الفائز
+                        resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
+                    }
+
+                    box.innerHTML = resultsHTML;
+                })
+                .catch(error => {
+                    box.innerHTML = '<span style="color:#ffcc80;">حدث خطأ أثناء جلب البيانات.</span>';
+                });
+        }
+
+        // نشر الفائزين في واجهة العملاء بالأسفل
+        function publishWinners() {
+            if (latestWinners.length === 0) {
+                alert("الرجاء إجراء السحب أولاً قبل النشر!");
+                return;
+            }
+
+            const publicList = document.getElementById('publicWinnersList');
+            let html = "";
+            latestWinners.forEach(w => {
+                html += `
+                    <div class="winner-row">
+                        <div class="w-name"><i class="fa-solid fa-medal"></i> ${w.name}</div>
+                        <div class="w-phone" dir="ltr">${maskPhone(w.phone)}</div>
+                    </div>
+                `;
+            });
+            publicList.innerHTML = html;
+            alert("تم نشر الفائزين وتحديث واجهة العملاء بنجاح! 🎉");
+        }
+
+        // توليد وتحميل صورة الفائزين للمشاركة على الواتساب
+        function generateWinnerImage() {
+            if (latestWinners.length === 0) {
+                alert("الرجاء إجراء السحب أولاً لإنشاء صورة الإعلان!");
+                return;
+            }
+
+            const cardList = document.getElementById('cardWinnersList');
+            let cardHtml = "";
+            latestWinners.forEach(w => {
+                cardHtml += `
+                    <div style="background: rgba(0,0,0,0.25); padding: 12px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.2);">
+                        <span style="font-size: 20px; font-weight: 700; color: #fff;">🏆 ${w.name}</span>
+                        <span style="font-size: 20px; font-weight: 900; color: #ffeb3b;" dir="ltr">${maskPhone(w.phone)}</span>
+                    </div>
+                `;
+            });
+            cardList.innerHTML = cardHtml;
+
+            const container = document.getElementById('shareCardContainer');
+            container.style.left = '0'; // إظهار مؤقت للتحويل
+
+            html2canvas(document.getElementById('shareCard'), { scale: 2 }).then(canvas => {
+                container.style.left = '-9999px'; // إخفاء القالب مرة أخرى
+                
+                // تنزيل الصورة تلقائياً
+                let link = document.createElement('a');
+                link.download = 'فائزين_مسابقة_مطعم_الطيبين.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // إرسال المشاركات
+        const form = document.getElementById('sweepstakesForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => response.json())
+                .then(data => {
+                    if(data.result === 'error') {
+                        message.textContent = data.message;
+                        message.style.color = 'red';
+                    } else {
+                        message.textContent = data.message;
+                        message.style.color = 'green';
+                        form.reset();
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'إرسال المشاركة';
+                })
+                .catch(error => {
+                    message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
+                    message.style.color = 'red';
+                    submitBtn.disabled = false;
                     submitBtn.textContent = 'إرسال المشاركة';
                 });
         });
