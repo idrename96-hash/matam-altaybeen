@@ -172,7 +172,6 @@
             border-top: 6px solid var(--dark-yellow);
         }
 
-        /* لوحة التحكم السرية للإدارة */
         .admin-section {
             background: linear-gradient(135deg, #263238, #37474f);
             border-radius: 16px;
@@ -433,14 +432,12 @@
             font-weight: 700;
         }
 
-        /* تصميم كارت الإعلان الذي سيتم تحويله إلى صورة */
         #shareCardContainer {
             position: fixed;
             left: -9999px;
             top: 0;
         }
     </style>
-    <!-- مكتبة لتقاط وتوليد الصور من HTML مباشرة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
@@ -493,21 +490,21 @@
             </form>
 
             <div class="whatsapp-section">
-                <a href="https://wa.me/966561422312" target="_blank" class="whatsapp-btn">
+                <a href="url?id=136" target="_blank" class="whatsapp-btn">
                     <i class="fa-brands fa-whatsapp"></i> تابعنا على الواتس
                 </a>
             </div>
         </div>
 
-        <!-- لوحة شرف الفائزين للعملاء (تتحدث أوتوماتيكياً عندما تنشرها من الإدارة) -->
+        <!-- واجهة العملاء لعرض آخر الفائزين فقط (تسحب تلقائياً من جوجل شيت) -->
         <div class="winners-public-section">
             <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
             <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
             
             <div id="publicWinnersList">
                 <div class="winner-row">
-                    <div class="w-name"><i class="fa-solid fa-medal"></i> أحمد محمد عبدالله</div>
-                    <div class="w-phone" dir="ltr">056****2312</div>
+                    <div class="w-name"><i class="fa-solid fa-medal"></i> جاري تحميل آخر الفائزين...</div>
+                    <div class="w-phone" dir="ltr">--</div>
                 </div>
             </div>
         </div>
@@ -521,24 +518,22 @@
                 <input type="number" id="winnerCount" value="1" min="1" max="10">
             </div>
 
-            <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي مباشر من الشيت</button>
+            <button type="button" class="draw-btn" onclick="fetchAndPickWinners()">🎲 سحب عشوائي (يستبعد الفائزين السابقين تلقائياً)</button>
             <button type="button" class="publish-btn" onclick="publishWinners()">📢 نشر الفائزين في واجهة العملاء</button>
             <button type="button" class="image-btn" onclick="generateWinnerImage()">📷 إنشاء وتنزيل صورة الفائزين للمشاركة</button>
             
             <div class="winner-display-box" id="winnerBox">
-                <span>اضغط الزر لجلب المشاركين واختيار الفائزين...</span>
+                <span>اضغط الزر لجلب المشاركين المتاحين واختيار الفائزين...</span>
             </div>
         </div>
     </div>
 
-    <!-- قالب مخفي لتوليد صورة الفائزين الاحترافية -->
+    <!-- قالب الصورة المخفي -->
     <div id="shareCardContainer">
         <div id="shareCard" style="width: 600px; background: linear-gradient(135deg, #9a0007, #d32f2f); padding: 40px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 20px; border: 6px solid #fbc02d;">
             <h2 style="color: #ffeb3b; font-size: 32px; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> إعلان الفائزين في مسابقة مطعم الطيبين</h2>
             <p style="font-size: 16px; margin-bottom: 25px; color: #ffcdd2;">ألف مبروك لأصحاب الحظ السعيد معنا اليوم!</p>
-            <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
-                <!-- سيتم تعبئة الفائزين هنا برمجياً -->
-            </div>
+            <div id="cardWinnersList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;"></div>
             <div style="font-size: 14px; color: #ffeb3b; font-weight: 700; border-top: 2px dashed rgba(255,255,255,0.3); padding-top: 15px;">
                 مكة المكرمة - حي العتيبية - شارع الجزائر | 0561422312
             </div>
@@ -552,7 +547,11 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycby9d3vLD3lgJyoGIk37R9D5vWNCvuoy3crey9pq-KCdW_FavviHfz1jSojqttqxUfj8/exec';
-        let latestWinners = []; // لتخزين الفائزين الحاليين
+        let latestWinners = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadPublishedWinners();
+        });
 
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
@@ -573,23 +572,23 @@
             return start + "****" + end;
         }
 
-        // سحب الفائزين عشوائياً
+        // سحب الفائزين عشوائياً (الشيت يقوم باستبعاد الفائزين السابقين تلقائياً)
         function fetchAndPickWinners() {
             const box = document.getElementById('winnerBox');
             const countInput = parseInt(document.getElementById('winnerCount').value) || 1;
 
-            box.innerHTML = '<span>جاري الاتصال بقاعدة البيانات وجلب المشتركين... 🔄</span>';
+            box.innerHTML = '<span>جاري فحص المشاركين واستبعاد الفائزين السابقين... 🔄</span>';
 
-            fetch(scriptURL)
+            fetch(scriptURL + '?action=getParticipants')
                 .then(response => response.json())
                 .then(data => {
                     if (!data || data.length === 0) {
-                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد بيانات مسجلة في الشيت حتى الآن!</span>';
+                        box.innerHTML = '<span style="color:#ffcc80;">لا توجد مشاركات جديدة متاحة للسحب (جميعهم فازوا مسبقاً أو لا توجد بيانات)!</span>';
                         return;
                     }
 
                     let resultsHTML = "";
-                    latestWinners = []; // تفريغ القائمة السابقة
+                    latestWinners = [];
                     let chosen = [];
                     let limit = Math.min(countInput, data.length);
 
@@ -601,7 +600,7 @@
                         chosen.push(rand);
 
                         let w = data[rand];
-                        latestWinners.push(w); // حفظ الفائز
+                        latestWinners.push(w);
                         resultsHTML += `<div class="winner-item"><span>🏆 ${w.name}</span> <span dir="ltr">${maskPhone(w.phone)}</span></div>`;
                     }
 
@@ -612,16 +611,15 @@
                 });
         }
 
-        // نشر الفائزين في واجهة العملاء بالأسفل
-        function publishWinners() {
-            if (latestWinners.length === 0) {
-                alert("الرجاء إجراء السحب أولاً قبل النشر!");
+        // عرض آخر الفائزين فقط في واجهة العملاء
+        function renderPublicWinners(winnersArray) {
+            const publicList = document.getElementById('publicWinnersList');
+            if (!winnersArray || winnersArray.length === 0) {
+                publicList.innerHTML = '<div class="winner-row"><div class="w-name">لا توجد مسحوبة معلنة حتى الآن</div></div>';
                 return;
             }
-
-            const publicList = document.getElementById('publicWinnersList');
             let html = "";
-            latestWinners.forEach(w => {
+            winnersArray.forEach(w => {
                 html += `
                     <div class="winner-row">
                         <div class="w-name"><i class="fa-solid fa-medal"></i> ${w.name}</div>
@@ -630,10 +628,43 @@
                 `;
             });
             publicList.innerHTML = html;
-            alert("تم نشر الفائزين وتحديث واجهة العملاء بنجاح! 🎉");
         }
 
-        // توليد وتحميل صورة الفائزين للمشاركة على الواتساب
+        // جلب آخر الفائزين المنشورين من الشيت
+        function loadPublishedWinners() {
+            fetch(scriptURL + '?action=getWinners')
+                .then(response => response.json())
+                .then(winners => {
+                    if (winners && winners.length > 0) {
+                        renderPublicWinners(winners);
+                    }
+                })
+                .catch(e => {});
+        }
+
+        // نشر آخر الفائزين وحفظهم في الشيت (ويتم تسجيلهم كفائزين سابقين لعدم تكرارهم)
+        function publishWinners() {
+            if (latestWinners.length === 0) {
+                alert("الرجاء إجراء السحب أولاً قبل النشر!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('action', 'saveWinners');
+            formData.append('winners', JSON.stringify(latestWinners));
+
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    renderPublicWinners(latestWinners);
+                    alert("تم نشر آخر الفائزين وحفظهم في النظام واستبعادهم من السحوبات القادمة بنجاح! 🎉");
+                })
+                .catch(error => {
+                    alert("حدث خطأ أثناء نشر الفائزين.");
+                });
+        }
+
+        // توليد صورة الإعلان لآخر الفائزين فقط
         function generateWinnerImage() {
             if (latestWinners.length === 0) {
                 alert("الرجاء إجراء السحب أولاً لإنشاء صورة الإعلان!");
@@ -653,14 +684,13 @@
             cardList.innerHTML = cardHtml;
 
             const container = document.getElementById('shareCardContainer');
-            container.style.left = '0'; // إظهار مؤقت للتحويل
+            container.style.left = '0';
 
             html2canvas(document.getElementById('shareCard'), { scale: 2 }).then(canvas => {
-                container.style.left = '-9999px'; // إخفاء القالب مرة أخرى
+                container.style.left = '-9999px';
                 
-                // تنزيل الصورة تلقائياً
                 let link = document.createElement('a');
-                link.download = 'فائزين_مسابقة_مطعم_الطيبين.png';
+                link.download = 'آخر_فائزين_مسابقة_مطعم_الطيبين.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
