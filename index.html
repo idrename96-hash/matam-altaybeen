@@ -195,11 +195,11 @@
 
         .admin-controls {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 15px;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
         }
 
         .admin-controls input {
@@ -211,8 +211,14 @@
             text-align: center;
             font-size: 14px;
         }
-        .admin-controls input[type="number"] { width: 60px; }
-        .admin-controls input[type="text"] { width: 150px; }
+
+        .admin-controls input[type="number"] {
+            width: 60px;
+        }
+
+        .admin-controls input[type="text"] {
+            width: 150px;
+        }
 
         .draw-btn {
             background-color: #2e7d32;
@@ -284,8 +290,17 @@
             flex-direction: column;
             gap: 2px;
         }
-        .winner-info span.name { color: var(--accent-yellow); font-weight: 900; }
-        .winner-info span.prize { color: #ffcdd2; font-size: 12px; font-weight: 600; }
+
+        .winner-info span.name {
+            color: var(--accent-yellow);
+            font-weight: 900;
+        }
+
+        .winner-info span.prize {
+            color: #ffcdd2;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
         .secret-admin-trigger {
             background: transparent;
@@ -324,6 +339,8 @@
             box-sizing: border-box;
             font-size: 16px;
             font-family: 'Cairo', sans-serif;
+            background: #fff;
+            color: #333;
         }
 
         button.submit-btn {
@@ -337,6 +354,7 @@
             cursor: pointer;
             font-weight: 800;
             box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+            transition: background-color 0.3s;
         }
 
         .whatsapp-section {
@@ -435,6 +453,7 @@
             text-align: center;
             margin-top: 15px;
             font-weight: 700;
+            line-height: 1.6;
         }
 
         #shareCardContainer {
@@ -487,21 +506,22 @@
                     <input type="text" id="name" name="name" class="form-input" required placeholder="أدخل اسمك الكامل">
                 </div>
                 <div class="form-group">
-                    <label for="phone">رقم الواتساب:</label>
+                    <label for="phone">رقم الجوال:</label>
                     <input type="tel" id="phone" name="phone" class="form-input" required placeholder="05xxxxxxxx">
                 </div>
-                <button type="submit" class="submit-btn" id="submitBtn">اشترك</button>
-                <p id="message"></p>
+                <button type="submit" class="submit-btn" id="submitBtn">إرسال المشاركة</button>
+                <div id="message"></div>
             </form>
 
             <div class="whatsapp-section">
-                <a href="https://whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a" target="_blank" class="whatsapp-btn">
-                    <i class="fa-brands fa-whatsapp"></i> تابع نتيجة الفائزين واخر العروض على الواتس
+                <!-- تم تحديث رابط زر الواتساب هنا ليوجه مباشرة للقناة -->
+                <a href="https://www.whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a" target="_blank" class="whatsapp-btn">
+                    <i class="fa-brands fa-whatsapp"></i> انضم لقناتنا وتابع نتيجة الفائزين والعروض
                 </a>
             </div>
         </div>
 
-        <!-- لوحة شرف الفائزين للعملاء (تجلب الفائزين تلقائياً) -->
+        <!-- لوحة شرف الفائزين للعملاء -->
         <div class="winners-public-section">
             <h3><i class="fa-solid fa-trophy" style="color: var(--dark-yellow);"></i> آخر الفائزين بالسحب</h3>
             <p>ألف مبروك لأصحاب الحظ السعيد معنا!</p>
@@ -521,7 +541,7 @@
                 <label for="winnerCount">العدد:</label>
                 <input type="number" id="winnerCount" value="1" min="1" max="10">
                 
-                <label for="prizeDesc" style="margin-left: 5px;">الجائزة:</label>
+                <label for="prizeDesc" style="margin-right: 10px;">الجائزة:</label>
                 <input type="text" id="prizeDesc" value="وجبة مجانية" placeholder="أدخل الجائزة">
             </div>
 
@@ -535,7 +555,7 @@
         </div>
     </div>
 
-    <!-- قالب صورة الإعلان الفاخر مع صلاحية 48 ساعة -->
+    <!-- قالب صورة الإعلان الفاخر -->
     <div id="shareCardContainer">
         <div id="shareCard" style="width: 650px; background: linear-gradient(135deg, #7b0005 0%, #b71c1c 50%, #d32f2f 100%); padding: 45px 35px; text-align: center; font-family: 'Cairo', sans-serif; color: white; border-radius: 24px; border: 5px solid #ffca28; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; overflow: hidden;">
             
@@ -550,10 +570,12 @@
                 <p style="font-size: 19px; font-weight: 700; color: #ffffff; margin: 6px 0 0 0;">مطعم الطيبين للأكلات المصرية</p>
             </div>
 
+            <!-- صندوق التهنئة -->
             <div style="background: rgba(0, 0, 0, 0.25); display: inline-block; padding: 5px 18px; border-radius: 30px; font-size: 14px; color: #ffcdd2; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
                 🎉 ألف مبروك لأصحاب الحظ السعيد معنا اليوم!
             </div>
 
+            <!-- صندوق صلاحية العرض (48 ساعة) -->
             <div style="background: rgba(255, 193, 7, 0.15); border: 2px dashed #ffca28; padding: 8px 15px; border-radius: 12px; font-size: 15px; color: #ffeb3b; font-weight: 800; margin-bottom: 22px;">
                 ⏳ سينتهي هذا العرض في يوم: <span id="expiryDateText" style="color: #ffffff;">---</span>
             </div>
@@ -581,8 +603,10 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycby9d3vLD3lgJyoGIk37R9D5vWNCvuoy3crey9pq-KCdW_FavviHfz1jSojqttqxUfj8/exec';
         let latestWinners = [];
+        
+        // تم تحديث هذا الرابط برابط القناة الجديد الخاص بك
+        const whatsappChannelLink = 'https://www.whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a'; 
 
-        // جلب الفائزين تلقائياً وعرضهم في واجهة العملاء عند فتح الصفحة
         window.addEventListener('DOMContentLoaded', () => {
             fetch(scriptURL)
                 .then(response => response.json())
@@ -667,7 +691,7 @@
                         chosen.push(rand);
 
                         let w = participants[rand];
-                        w.prize = prizeInput; // إضافة الجائزة
+                        w.prize = prizeInput; // إضافة الجائزة لمعلومات الفائز
                         latestWinners.push(w);
                         
                         resultsHTML += `
@@ -702,7 +726,7 @@
                 .then(response => response.json())
                 .then(data => {
                     updatePublicWinnersUI(latestWinners);
-                    alert("تم نشر الفائزين في واجهة العملاء وحفظهم في ملف الإكسيل بنجاح! 🎉");
+                    alert("تم نشر الفائزين في واجهة العملاء وحفظهم في ملف الإكسيل (ورقة الفائزين) بنجاح! 🎉");
                 })
                 .catch(error => {
                     alert("حدث خطأ أثناء الحفظ في الشيت.");
@@ -760,27 +784,36 @@
             e.preventDefault();
 
             submitBtn.disabled = true;
+            submitBtn.style.backgroundColor = '#7b0005';
             submitBtn.textContent = 'جاري الإرسال...';
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => response.json())
                 .then(data => {
                     if(data.result === 'error') {
-                        message.textContent = data.message;
+                        message.innerHTML = '❌ ' + data.message;
                         message.style.color = 'red';
+                        submitBtn.disabled = false;
+                        submitBtn.style.backgroundColor = 'var(--primary-red)';
+                        submitBtn.textContent = 'إرسال المشاركة';
                     } else {
-                        message.textContent = data.message;
+                        // إظهار رسالة النجاح وتفعيل التحويل التلقائي للقناة
+                        message.innerHTML = '🎉 ' + data.message + '<br><span style="color:#2e7d32; font-size:15px; font-weight:bold;">سيتم تحويلك الآن لقناة الواتساب لمتابعة النتيجة... ⏳</span>';
                         message.style.color = 'green';
                         form.reset();
+                        
+                        // أمر التحويل التلقائي بعد 3 ثواني إلى القناة
+                        setTimeout(() => {
+                            window.location.href = whatsappChannelLink;
+                        }, 3000);
                     }
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'اشترك';
                 })
                 .catch(error => {
-                    message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
+                    message.innerHTML = '❌ حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
                     message.style.color = 'red';
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'اشترك';
+                    submitBtn.style.backgroundColor = 'var(--primary-red)';
+                    submitBtn.textContent = 'إرسال المشاركة';
                 });
         });
     </script>
