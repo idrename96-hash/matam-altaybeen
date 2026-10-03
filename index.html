@@ -354,7 +354,6 @@
             cursor: pointer;
             font-weight: 800;
             box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
-            transition: background-color 0.3s;
         }
 
         .whatsapp-section {
@@ -453,7 +452,6 @@
             text-align: center;
             margin-top: 15px;
             font-weight: 700;
-            line-height: 1.6;
         }
 
         #shareCardContainer {
@@ -510,13 +508,12 @@
                     <input type="tel" id="phone" name="phone" class="form-input" required placeholder="05xxxxxxxx">
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">إرسال المشاركة</button>
-                <div id="message"></div>
+                <p id="message"></p>
             </form>
 
             <div class="whatsapp-section">
-                <!-- تم تحديث رابط زر الواتساب هنا ليوجه مباشرة للقناة -->
-                <a href="https://www.whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a" target="_blank" class="whatsapp-btn">
-                    <i class="fa-brands fa-whatsapp"></i> انضم لقناتنا وتابع نتيجة الفائزين والعروض
+                <a href="https://wa.me/966561422312" target="_blank" class="whatsapp-btn">
+                    <i class="fa-brands fa-whatsapp"></i> تابع نتيجة الفائزين واخر العروض على الواتس
                 </a>
             </div>
         </div>
@@ -603,9 +600,6 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycby9d3vLD3lgJyoGIk37R9D5vWNCvuoy3crey9pq-KCdW_FavviHfz1jSojqttqxUfj8/exec';
         let latestWinners = [];
-        
-        // تم تحديث هذا الرابط برابط القناة الجديد الخاص بك
-        const whatsappChannelLink = 'https://www.whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a'; 
 
         window.addEventListener('DOMContentLoaded', () => {
             fetch(scriptURL)
@@ -784,35 +778,26 @@
             e.preventDefault();
 
             submitBtn.disabled = true;
-            submitBtn.style.backgroundColor = '#7b0005';
             submitBtn.textContent = 'جاري الإرسال...';
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => response.json())
                 .then(data => {
                     if(data.result === 'error') {
-                        message.innerHTML = '❌ ' + data.message;
+                        message.textContent = data.message;
                         message.style.color = 'red';
-                        submitBtn.disabled = false;
-                        submitBtn.style.backgroundColor = 'var(--primary-red)';
-                        submitBtn.textContent = 'إرسال المشاركة';
                     } else {
-                        // إظهار رسالة النجاح وتفعيل التحويل التلقائي للقناة
-                        message.innerHTML = '🎉 ' + data.message + '<br><span style="color:#2e7d32; font-size:15px; font-weight:bold;">سيتم تحويلك الآن لقناة الواتساب لمتابعة النتيجة... ⏳</span>';
+                        message.textContent = data.message;
                         message.style.color = 'green';
                         form.reset();
-                        
-                        // أمر التحويل التلقائي بعد 3 ثواني إلى القناة
-                        setTimeout(() => {
-                            window.location.href = whatsappChannelLink;
-                        }, 3000);
                     }
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'إرسال المشاركة';
                 })
                 .catch(error => {
-                    message.innerHTML = '❌ حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
+                    message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
                     message.style.color = 'red';
                     submitBtn.disabled = false;
-                    submitBtn.style.backgroundColor = 'var(--primary-red)';
                     submitBtn.textContent = 'إرسال المشاركة';
                 });
         });
