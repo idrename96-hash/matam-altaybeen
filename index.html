@@ -354,6 +354,7 @@
             cursor: pointer;
             font-weight: 800;
             box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+            transition: background-color 0.3s;
         }
 
         .whatsapp-section {
@@ -452,6 +453,7 @@
             text-align: center;
             margin-top: 15px;
             font-weight: 700;
+            line-height: 1.6;
         }
 
         #shareCardContainer {
@@ -481,6 +483,7 @@
             <div class="info-badge location">
                 <i class="fa-solid fa-location-dot"></i> مكة المكرمة - حي العتيبية - شارع الجزائر
             </div>
+            <!-- زر واتساب للطلبات بالرقم المباشر -->
             <div class="info-badge badge-contact">
                 <span class="contact-text">للطلبات والحجوزات:</span>
                 <a href="https://wa.me/966561422312" target="_blank" class="contact-action wa-action" title="مراسلة عبر واتساب">
@@ -508,12 +511,13 @@
                     <input type="tel" id="phone" name="phone" class="form-input" required placeholder="05xxxxxxxx">
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">إرسال المشاركة</button>
-                <p id="message"></p>
+                <div id="message"></div>
             </form>
 
             <div class="whatsapp-section">
-                <a href="https://wa.me/966561422312" target="_blank" class="whatsapp-btn">
-                    <i class="fa-brands fa-whatsapp"></i> تابع نتيجة الفائزين واخر العروض على الواتس
+                <!-- زر واتساب للانضمام إلى القناة -->
+                <a href="https://www.whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a" target="_blank" class="whatsapp-btn">
+                    <i class="fa-brands fa-whatsapp"></i> انضم لقناتنا وتابع نتيجة الفائزين والعروض
                 </a>
             </div>
         </div>
@@ -685,7 +689,7 @@
                         chosen.push(rand);
 
                         let w = participants[rand];
-                        w.prize = prizeInput; // إضافة الجائزة لمعلومات الفائز
+                        w.prize = prizeInput; 
                         latestWinners.push(w);
                         
                         resultsHTML += `
@@ -778,26 +782,35 @@
             e.preventDefault();
 
             submitBtn.disabled = true;
+            submitBtn.style.backgroundColor = '#7b0005';
             submitBtn.textContent = 'جاري الإرسال...';
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => response.json())
                 .then(data => {
                     if(data.result === 'error') {
-                        message.textContent = data.message;
+                        message.innerHTML = '❌ ' + data.message;
                         message.style.color = 'red';
+                        submitBtn.disabled = false;
+                        submitBtn.style.backgroundColor = 'var(--primary-red)';
+                        submitBtn.textContent = 'إرسال المشاركة';
                     } else {
-                        message.textContent = data.message;
+                        // إظهار رسالة النجاح وتفعيل التحويل التلقائي للقناة
+                        message.innerHTML = '🎉 ' + data.message + '<br><span style="color:#2e7d32; font-size:15px; font-weight:bold;">سيتم تحويلك الآن لقناة الواتساب لمتابعة النتيجة... ⏳</span>';
                         message.style.color = 'green';
                         form.reset();
+                        
+                        // أمر التحويل التلقائي بعد 3 ثواني إلى القناة
+                        setTimeout(() => {
+                            window.location.href = 'https://www.whatsapp.com/channel/0029VbDVQ526LwHixlJKam0a';
+                        }, 3000);
                     }
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'إرسال المشاركة';
                 })
                 .catch(error => {
-                    message.textContent = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
+                    message.innerHTML = '❌ حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
                     message.style.color = 'red';
                     submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = 'var(--primary-red)';
                     submitBtn.textContent = 'إرسال المشاركة';
                 });
         });
